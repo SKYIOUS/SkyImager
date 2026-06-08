@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Standard Dialog Routines (Browse for folder, About, etc)
- * Copyright © 2011-2026 Pete Batard <pete@akeo.ie>
+			"Original work \u00a9 2011-2026 Pete Batard\\line\nSkyImager \u00a9 2026 SKYIOUS",
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include <richedit.h>
 #include <assert.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "missing.h"
 #include "resource.h"
 #include "msapi_utf8.h"
@@ -145,7 +145,7 @@ char* FileDialog(BOOL save, char* path, const ext_t* ext, UINT* selected_ext)
 	hr = CoCreateInstance(save ? &CLSID_FileSaveDialog : &CLSID_FileOpenDialog, NULL, CLSCTX_INPROC,
 		&IID_IFileDialog, (LPVOID)&pfd);
 	if (SUCCEEDED(hr) && (pfd == NULL))	// Never trust Microsoft APIs to do the right thing
-		hr = RUFUS_ERROR(ERROR_API_UNAVAILABLE);
+		hr = SKYIMAGER_ERROR(ERROR_API_UNAVAILABLE);
 
 	if (FAILED(hr)) {
 		SetLastError(hr);
@@ -415,8 +415,8 @@ INT_PTR CALLBACK AboutCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			max(rc.right - rc.left, GetTextSize(hCtrl, NULL).cx + cbw), bh, SWP_NOZORDER);
 		ResizeButtonHeight(hDlg, IDOK);
 		static_sprintf(about_blurb, about_blurb_format, lmprintf(MSG_174|MSG_RTF),
-			lmprintf(MSG_175|MSG_RTF, rufus_version[0], rufus_version[1], rufus_version[2]),
-			"Copyright © 2011-2026 Pete Batard",
+			lmprintf(MSG_175|MSG_RTF, skyimager_version[0], skyimager_version[1], skyimager_version[2]),
+			"Original work \u00a9 2011-2026 Pete Batard\\line\nSkyImager \u00a9 2026 SKYIOUS",
 			lmprintf(MSG_176|MSG_RTF), lmprintf(MSG_177|MSG_RTF), lmprintf(MSG_178|MSG_RTF));
 		for (i = 0; i < ARRAYSIZE(hEdit); i++) {
 			hEdit[i] = GetDlgItem(hDlg, edit_id[i]);
@@ -844,7 +844,7 @@ static int GetComboBoxMinWidth(HWND hCtrl, StrArray* array)
 static INT_PTR CALLBACK SelectionCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	// This "Mooo" is designed to give us enough space for a regular username length
-	static const char* base_username = "MOOOOOOOOOOO";	// 🐮
+	static const char* base_username = "MOOOOOOOOOOO";	// ðŸ®
 	// https://learn.microsoft.com/en-us/previous-versions/cc722458(v=technet.10)#user-name-policies
 	static const char* username_invalid_chars = "/\\[]:;|=,+*?<>\"";
 	// Prevent resizing
@@ -1077,7 +1077,7 @@ static INT_PTR CALLBACK SelectionCallback(HWND hDlg, UINT message, WPARAM wParam
 					if (strchr(username_invalid_chars, unattend_username[i]) != NULL)
 						unattend_username[i] = '_';
 				}
-				// Also remove leading and trailing whitespaces (https://github.com/pbatard/rufus/issues/2950)
+				// Also remove leading and trailing whitespaces (https://github.com/SKYIOUS/SkyImager/issues/2950)
 				trim(unattend_username);
 			}
 			if (selection_data[s].options->edition_index > 0)
@@ -1291,7 +1291,7 @@ INT_PTR CALLBACK TooltipCallback(HWND hControl, UINT message, WPARAM wParam, LPA
 	}
 #ifdef _DEBUG
 	// comctl32 causes issues if the tooltips are not being manipulated from the same thread as
-	// their parent controls. See https://github.com/pbatard/rufus/issues/764.
+	// their parent controls. See https://github.com/SKYIOUS/SkyImager/issues/764.
 	if (GetCurrentThreadId() != GetWindowThreadProcessId(hControl, NULL))
 		uprintf("WARNING: Tooltip callback is being called from wrong thread");
 #endif
@@ -1690,7 +1690,7 @@ static DWORD WINAPI CheckForFidoThread(LPVOID param)
 	safe_free(sb_revoked_txt);
 
 	// Get the latest sbat_level.txt data while we're poking the network for Fido.
-	len = DownloadToFileOrBuffer(RUFUS_URL "/sbat_level.txt", NULL, (BYTE**)&sbat_level_txt, NULL, FALSE);
+	len = DownloadToFileOrBuffer(SKYIMAGER_URL "/sbat_level.txt", NULL, (BYTE**)&sbat_level_txt, NULL, FALSE);
 	if (len != 0 && len < 1 * KB) {
 		sbat_entries = GetSbatEntries(sbat_level_txt);
 		if (sbat_entries != NULL) {
@@ -1701,7 +1701,7 @@ static DWORD WINAPI CheckForFidoThread(LPVOID param)
 	}
 
 	// Get the active Secure Boot certificate thumbprints
-	len = DownloadToFileOrBuffer(RUFUS_URL "/sb_active.txt", NULL, (BYTE**)&sb_active_txt, NULL, FALSE);
+	len = DownloadToFileOrBuffer(SKYIMAGER_URL "/sb_active.txt", NULL, (BYTE**)&sb_active_txt, NULL, FALSE);
 	if (len != 0 && len < 1 * KB) {
 		sb_active_certs = GetThumbprintEntries(sb_active_txt);
 		if (sb_active_certs != NULL) {
@@ -1710,7 +1710,7 @@ static DWORD WINAPI CheckForFidoThread(LPVOID param)
 	}
 
 	// Get the revoked Secure Boot certificate thumbprints
-	len = DownloadToFileOrBuffer(RUFUS_URL "/sb_revoked.txt", NULL, (BYTE**)&sb_revoked_txt, NULL, FALSE);
+	len = DownloadToFileOrBuffer(SKYIMAGER_URL "/sb_revoked.txt", NULL, (BYTE**)&sb_revoked_txt, NULL, FALSE);
 	if (len != 0 && len < 1 * KB) {
 		sb_revoked_certs = GetThumbprintEntries(sb_revoked_txt);
 		if (sb_revoked_certs != NULL) {
@@ -1721,14 +1721,14 @@ static DWORD WINAPI CheckForFidoThread(LPVOID param)
 	// Get the Fido URL from parsing a 'Fido.ver' on our server. This enables the use of different
 	// Fido versions from different versions of Rufus, if needed, as opposed to always downloading
 	// the latest release from GitHub, which may contain incompatible changes...
-	len = DownloadToFileOrBuffer(RUFUS_URL "/Fido.ver", NULL, (BYTE**)&loc, NULL, FALSE);
+	len = DownloadToFileOrBuffer(SKYIMAGER_URL "/Fido.ver", NULL, (BYTE**)&loc, NULL, FALSE);
 	if ((len == 0) || (len >= 4 * KB))
 		goto out;
 
 	len++;	// DownloadToFileOrBuffer allocated an extra NUL character if needed
 	fido_url = get_token_data_buffer(FIDO_VERSION, 1, loc, (size_t)len);
 	if (safe_strncmp(fido_url, "https://github.com/pbatard/Fido", 31) != 0) {
-		uprintf("WARNING: Download script URL %s is invalid ✗", fido_url);
+		uprintf("WARNING: Download script URL %s is invalid âœ—", fido_url);
 		safe_free(fido_url);
 		goto out;
 	}
@@ -1789,7 +1789,7 @@ BOOL SetUpdateCheck(void)
 		notification_info more_info;
 
 		// Add a hack for people who'd prefer the app not to prompt about update settings on first run.
-		// If the executable is called "rufus.exe", without version, we disable the prompt
+		// If the executable is called "skyimager.exe", without version, we disable the prompt
 		GetModuleFileNameU(NULL, filename, sizeof(filename));
 		fn_len = safe_strlen(filename);
 		exe_len = safe_strlen(exename);
@@ -1924,7 +1924,7 @@ INT_PTR CALLBACK NewVersionCallback(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		SendMessage(hNotes, EM_SETSEL, -1, -1);
 		SendMessage(hNotes, EM_SETEVENTMASK, 0, ENM_LINK);
 		SetWindowTextU(GetDlgItem(hDlg, IDC_YOUR_VERSION), lmprintf(MSG_018,
-			rufus_version[0], rufus_version[1], rufus_version[2]));
+			skyimager_version[0], skyimager_version[1], skyimager_version[2]));
 		SetWindowTextU(GetDlgItem(hDlg, IDC_LATEST_VERSION), lmprintf(MSG_019,
 			update.version[0], update.version[1], update.version[2]));
 		SetWindowTextU(GetDlgItem(hDlg, IDC_DOWNLOAD_URL), update.download_url);
@@ -1958,12 +1958,12 @@ INT_PTR CALLBACK NewVersionCallback(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			}
 			return (INT_PTR)TRUE;
 		case IDC_WEBSITE:
-			ShellExecuteA(hDlg, "open", RUFUS_URL, NULL, NULL, SW_SHOWNORMAL);
+			ShellExecuteA(hDlg, "open", SKYIMAGER_URL, NULL, NULL, SW_SHOWNORMAL);
 			break;
 		case IDC_DOWNLOAD:	// Also doubles as abort and launch function
 			switch(download_status) {
 			case 1:		// Abort
-				ErrorStatus = RUFUS_ERROR(ERROR_CANCELLED);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_CANCELLED);
 				download_status = 0;
 				hThread = NULL;
 				break;
@@ -2038,7 +2038,7 @@ INT_PTR CALLBACK NewVersionCallback(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			SetWindowTextU(GetDlgItem(hDlg, IDC_DOWNLOAD), lmprintf(MSG_040));
 			// Disable the download button if we found an invalid signature
 			EnableWindow(GetDlgItem(hDlg, IDC_DOWNLOAD),
-				ErrorStatus != RUFUS_ERROR(APPERR(ERROR_BAD_SIGNATURE)));
+				ErrorStatus != SKYIMAGER_ERROR(APPERR(ERROR_BAD_SIGNATURE)));
 			download_status = 0;
 		}
 		return (INT_PTR)TRUE;
@@ -2389,7 +2389,7 @@ HICON CreateMirroredIcon(HICON hiconOrg)
 	return hicon;
 }
 
-#ifdef RUFUS_TEST
+#ifdef SKYIMAGER_TEST
 static __inline LPWORD lpwAlign(LPWORD addr)
 {
 	return (LPWORD)((((uintptr_t)addr) + 3) & (~3));
