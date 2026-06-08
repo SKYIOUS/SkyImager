@@ -24,7 +24,7 @@
 #include <windows.h>
 #include <stdint.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "resource.h"
 #include "msapi_utf8.h"
 #include "localization.h"

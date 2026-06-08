@@ -141,19 +141,19 @@ int is_win7_mbr(FILE *fp)
 
 int is_rufus_mbr(FILE *fp)
 {
-   #include "mbr_rufus.h"
+   #include "mbr_skyimager.h"
 
    return
-      contains_data(fp, 0x0, mbr_rufus_0x0, sizeof(mbr_rufus_0x0)) &&
+      contains_data(fp, 0x0, mbr_skyimager_0x0, sizeof(mbr_skyimager_0x0)) &&
       is_br(fp);
 } /* is_rufus_mbr */
 
 int is_rufus_msg_mbr(FILE *fp)
 {
-#include "mbr_msg_rufus.h"
+#include "mbr_msg_skyimager.h"
 
     return
-       contains_data(fp, 0x0, mbr_msg_rufus_0x0, sizeof(mbr_msg_rufus_0x0)) &&
+       contains_data(fp, 0x0, mbr_msg_skyimager_0x0, sizeof(mbr_msg_skyimager_0x0)) &&
        is_br(fp);
 } /* is_rufus_msg_mbr */
 
@@ -310,19 +310,19 @@ int write_win7_mbr(FILE *fp)
 
 int write_rufus_mbr(FILE *fp)
 {
-   #include "mbr_rufus.h"
+   #include "mbr_skyimager.h"
 
    return
-      write_data(fp, 0x0, mbr_rufus_0x0, sizeof(mbr_rufus_0x0)) &&
+      write_data(fp, 0x0, mbr_skyimager_0x0, sizeof(mbr_skyimager_0x0)) &&
       write_bootmark(fp);
 } /* write_rufus_mbr */
 
 int write_rufus_msg_mbr(FILE *fp)
 {
-#include "mbr_msg_rufus.h"
+#include "mbr_msg_skyimager.h"
 
     return
-       write_data(fp, 0x0, mbr_msg_rufus_0x0, sizeof(mbr_msg_rufus_0x0)) &&
+       write_data(fp, 0x0, mbr_msg_skyimager_0x0, sizeof(mbr_msg_skyimager_0x0)) &&
        write_bootmark(fp);
 } /* write_rufus_msg_mbr */
 

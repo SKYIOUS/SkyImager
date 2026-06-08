@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Device detection and enumeration
- * Copyright © 2014-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2014-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 #include <cfg.h>
 #include <assert.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "missing.h"
 #include "resource.h"
 #include "settings.h"
@@ -45,7 +45,7 @@
 #include "drive.h"
 #include "dev.h"
 
-extern RUFUS_DRIVE rufus_drive[MAX_DRIVES];
+extern SKYIMAGER_DRIVE DriveInfo[MAX_DRIVES];
 extern BOOL enable_HDDs, enable_VHDs, use_fake_units, enable_vmdk, usb_debug;
 extern BOOL list_non_usb_removable_drives, its_a_me_mario;
 
@@ -145,23 +145,23 @@ BOOL CyclePort(int index)
 		return FALSE;
 	}
 
-	if (rufus_drive[index].hub == NULL) {
+	if (DriveInfo[index].hub == NULL) {
 		uprintf("The device you are trying to reset does not appear to be a USB device...");
 		return FALSE;
 	}
 
 	LastReset = GetTickCount64();
 
-	handle = CreateFileA(rufus_drive[index].hub, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
+	handle = CreateFileA(DriveInfo[index].hub, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_FLAG_OVERLAPPED, NULL);
 	if (handle == INVALID_HANDLE_VALUE) {
-		uprintf("Could not open %s: %s", rufus_drive[index].hub, WindowsErrorString());
+		uprintf("Could not open %s: %s", DriveInfo[index].hub, WindowsErrorString());
 		goto out;
 	}
 
 	size = sizeof(cycle_port);
 	memset(&cycle_port, 0, size);
-	cycle_port.ConnectionIndex = rufus_drive[index].port;
-	uprintf("Cycling port %d (reset) on %s", rufus_drive[index].port, rufus_drive[index].hub);
+	cycle_port.ConnectionIndex = DriveInfo[index].port;
+	uprintf("Cycling port %d (reset) on %s", DriveInfo[index].port, DriveInfo[index].hub);
 	// As per https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/usbioctl/ni-usbioctl-ioctl_usb_hub_cycle_port
 	// IOCTL_USB_HUB_CYCLE_PORT is not supported on Windows 7, Windows Vista, and Windows Server 2008
 	if (!DeviceIoControl(handle, IOCTL_USB_HUB_CYCLE_PORT, &cycle_port, size, &cycle_port, size, &size, NULL)) {
@@ -193,7 +193,7 @@ int CycleDevice(int index)
 
 	if_assert_fails(index < MAX_DRIVES)
 		return ERROR_INVALID_DRIVE;
-	if ((index < 0) || (safe_strlen(rufus_drive[index].id) < 8))
+	if ((index < 0) || (safe_strlen(DriveInfo[index].id) < 8))
 		return ERROR_INVALID_PARAMETER;
 
 	// Need DIGCF_ALLCLASSES else disabled devices won't be listed.
@@ -212,7 +212,7 @@ int CycleDevice(int index)
 			continue;
 		}
 
-		if (safe_strcmp(rufus_drive[index].id, device_instance_id) != 0)
+		if (safe_strcmp(DriveInfo[index].id, device_instance_id) != 0)
 			continue;
 
 		found = TRUE;
@@ -428,14 +428,14 @@ BOOL GetOpticalMedia(IMG_SAVE* img_save)
 void ClearDrives(void)
 {
 	int i;
-	for (i = 0; i < MAX_DRIVES && rufus_drive[i].size != 0; i++) {
-		free(rufus_drive[i].id);
-		free(rufus_drive[i].name);
-		free(rufus_drive[i].display_name);
-		free(rufus_drive[i].label);
-		free(rufus_drive[i].hub);
+	for (i = 0; i < MAX_DRIVES && DriveInfo[i].size != 0; i++) {
+		free(DriveInfo[i].id);
+		free(DriveInfo[i].name);
+		free(DriveInfo[i].display_name);
+		free(DriveInfo[i].label);
+		free(DriveInfo[i].hub);
 	}
-	memset(rufus_drive, 0, sizeof(rufus_drive));
+	memset(DriveInfo, 0, sizeof(SKYIMAGER_DRIVE));
 }
 
 /*
@@ -1020,17 +1020,17 @@ BOOL GetDevices(DWORD devnum)
 					display_name = display_msg;
 				}
 
-				rufus_drive[num_drives].index = drive_index;
-				rufus_drive[num_drives].id = safe_strdup(device_instance_id);
-				rufus_drive[num_drives].name = safe_strdup(buffer);
-				rufus_drive[num_drives].display_name = safe_strdup(display_name);
-				rufus_drive[num_drives].label = safe_strdup(label);
-				rufus_drive[num_drives].size = drive_size;
-				if_assert_fails(rufus_drive[num_drives].size != 0)
+				DriveInfo[num_drives].index = drive_index;
+				DriveInfo[num_drives].id = safe_strdup(device_instance_id);
+				DriveInfo[num_drives].name = safe_strdup(buffer);
+				DriveInfo[num_drives].display_name = safe_strdup(display_name);
+				DriveInfo[num_drives].label = safe_strdup(label);
+				DriveInfo[num_drives].size = drive_size;
+				if_assert_fails(DriveInfo[num_drives].size != 0)
 					break;
 				if (hub_path != NULL) {
-					rufus_drive[num_drives].hub = safe_strdup(hub_path);
-					rufus_drive[num_drives].port = props.port;
+					DriveInfo[num_drives].hub = safe_strdup(hub_path);
+					DriveInfo[num_drives].port = props.port;
 				}
 				num_drives++;
 				if (num_drives >= MAX_DRIVES)
@@ -1044,27 +1044,27 @@ BOOL GetDevices(DWORD devnum)
 
 	// Reorder the drives by increasing size, using the "selection sort" algorithm
 	for (u = 0; u < num_drives - 1; u++) {
-		uint64_t min_drive_size = rufus_drive[u].size;
+		uint64_t min_drive_size = DriveInfo[u].size;
 		int min_index = u;
 		for (v = u + 1; v < num_drives; v++) {
-			if (rufus_drive[v].size < min_drive_size) {
-				min_drive_size = rufus_drive[v].size;
+			if (DriveInfo[v].size < min_drive_size) {
+				min_drive_size = DriveInfo[v].size;
 				min_index = v;
 			}
 		}
 		if (min_index != u) {
-			RUFUS_DRIVE tmp;
-			memcpy(&tmp, &rufus_drive[u], sizeof(RUFUS_DRIVE));
-			memcpy(&rufus_drive[u], &rufus_drive[min_index], sizeof(RUFUS_DRIVE));
-			memcpy(&rufus_drive[min_index], &tmp, sizeof(RUFUS_DRIVE));
+			SKYIMAGER_DRIVE tmp;
+			memcpy(&tmp, &DriveInfo[u], sizeof(SKYIMAGER_DRIVE));
+			memcpy(&DriveInfo[u], &DriveInfo[min_index], sizeof(SKYIMAGER_DRIVE));
+			memcpy(&DriveInfo[min_index], &tmp, sizeof(SKYIMAGER_DRIVE));
 		}
 	}
 
 	// Now populate the drive combo box
 	// NB: The combo box must have the UNSORTED attribute for indexes to remain the ones we assign
 	for (u = 0; u < num_drives; u++) {
-		IGNORE_RETVAL(ComboBox_SetItemData(hDeviceList, ComboBox_AddStringU(hDeviceList, rufus_drive[u].display_name), rufus_drive[u].index));
-		maxwidth = max(maxwidth, GetEntryWidth(hDeviceList, rufus_drive[u].display_name));
+		IGNORE_RETVAL(ComboBox_SetItemData(hDeviceList, ComboBox_AddStringU(hDeviceList, DriveInfo[u].display_name), DriveInfo[u].index));
+		maxwidth = max(maxwidth, GetEntryWidth(hDeviceList, DriveInfo[u].display_name));
 	}
 	// Adjust the Dropdown width to the maximum text size
 	SendMessage(hDeviceList, CB_SETDROPPEDWIDTH, (WPARAM)maxwidth, 0);

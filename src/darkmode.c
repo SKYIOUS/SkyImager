@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Dark mode UI implementation
- * Copyright © 2025 ozone10
+ * Copyright Â© 2025 ozone10
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include <vssym32.h>
 #include <math.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "ui.h"
 #include "settings.h"
 #include "darkmode.h"

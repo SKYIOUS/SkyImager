@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Drive access function calls
- * Copyright © 2011-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2011-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 #include <vds.h>
 #endif
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "ntdll.h"
 #include "missing.h"
 #include "resource.h"
@@ -74,7 +74,7 @@ const IID IID_IVdsVolumeMF3 = { 0x6788FAF9, 0x214E, 0x4B85, { 0xBA, 0x59, 0x26, 
 /*
  * Globals
  */
-RUFUS_DRIVE_INFO SelectedDrive;
+SKYIMAGER_DRIVE_INFO SelectedDrive;
 extern BOOL write_as_esp;
 extern windows_version_t WindowsVersion;
 int partition_index[PI_MAX];
@@ -83,7 +83,7 @@ uint64_t persistence_size = 0;
 /*
  * The following methods get or set the AutoMount setting (which is different from AutoRun)
  * Rufus needs AutoMount to be set as the format process may fail for fixed drives otherwise.
- * See https://github.com/pbatard/rufus/issues/386.
+ * See https://github.com/SKYIOUS/SkyImager/issues/386.
  *
  * Reverse engineering diskpart and mountvol indicates that the former uses the IVdsService
  * ClearFlags()/SetFlags() to set VDS_SVF_AUTO_MOUNT_OFF whereas mountvol on uses
@@ -350,7 +350,7 @@ char* GetLogicalName(DWORD DriveIndex, uint64_t PartitionOffset, BOOL bKeepTrail
 				bPrintHeader = FALSE;
 				uuprintf("Windows volumes from this device:");
 			}
-			uuprintf("● %s @%lld", volume_name, DiskExtents.Extents[0].StartingOffset.QuadPart);
+			uuprintf("â— %s @%lld", volume_name, DiskExtents.Extents[0].StartingOffset.QuadPart);
 		}
 	}
 
@@ -816,7 +816,7 @@ BOOL DeletePartition(DWORD DriveIndex, ULONGLONG PartitionOffset, BOOL bSilent)
 		for (i = 0; i < prop_array_size; i++) {
 			if ((PartitionOffset != 0) && (prop_array[i].ullOffset != PartitionOffset))
 				continue;
-			suprintf("● Partition %d (offset: %lld, size: %s)", prop_array[i].ulPartitionNumber,
+			suprintf("â— Partition %d (offset: %lld, size: %s)", prop_array[i].ulPartitionNumber,
 				prop_array[i].ullOffset, SizeToHumanReadable(prop_array[i].ullSize, FALSE, FALSE));
 			hr = IVdsAdvancedDisk_DeletePartition(pAdvancedDisk, prop_array[i].ullOffset, TRUE, TRUE);
 			if (hr != S_OK)
@@ -1140,7 +1140,7 @@ static BOOL _GetDriveLettersAndType(DWORD DriveIndex, char* drive_letters, UINT*
 		// IOCTL_STORAGE_GET_DEVICE_NUMBER's STORAGE_DEVICE_NUMBER.DeviceNumber is
 		// not unique! An HDD, a DVD and probably other drives can have the same
 		// value there => Use GetDriveType() to filter out unwanted devices.
-		// See https://github.com/pbatard/rufus/issues/32#issuecomment-3785956
+		// See https://github.com/SKYIOUS/SkyImager/issues/32#issuecomment-3785956
 		_drive_type = GetDriveTypeA(drive);
 
 		if ((_drive_type != DRIVE_REMOVABLE) && (_drive_type != DRIVE_FIXED))
@@ -1430,7 +1430,7 @@ const struct {int (*fn)(FILE *fp); char* str;} known_mbr[] = {
 	{ is_2000_mbr, "Windows 2000/XP/2003" },
 	{ is_vista_mbr, "Windows Vista" },
 	{ is_win7_mbr, "Windows 7" },
-	{ is_rufus_mbr, "Rufus" },
+	{ is_rufus_mbr, "SkyImager" },
 	{ is_syslinux_mbr, "Syslinux" },
 	{ is_isolinux_mbr, "Isolinux" },
 	{ is_reactos_mbr, "ReactOS" },
@@ -1960,7 +1960,7 @@ BOOL GetDrivePartitionData(DWORD DriveIndex, char* FileSystemName, DWORD FileSys
 					if (buf != NULL) {
 						if (SetFilePointerEx(hPhysical, DriveLayout->PartitionEntry[i].StartingOffset, NULL, FILE_BEGIN) &&
 							ReadFile(hPhysical, buf, SelectedDrive.SectorSize, &size, NULL)) {
-							isUefiNtfs = (strncmp(&buf[0x2B], "UEFI_NTFS", 9) == 0) || (strncmp(&buf[0x2B], "RUFUS_BOOT", 10) == 0);
+							isUefiNtfs = (strncmp(&buf[0x2B], "UEFI_NTFS", 9) == 0) || (strncmp(&buf[0x2B], "SKYIMAGER_BOOT", 10) == 0);
 						}
 						free(buf);
 					}
@@ -2230,7 +2230,7 @@ BOOL RemountVolume(char* drive_name, BOOL bSilent)
 		} else {
 			suprintf("Could not remount %s as %c: %s", volume_name, toupper(drive_name[0]), WindowsErrorString());
 			// This will leave the drive inaccessible and must be flagged as an error
-			ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_REMOUNT_VOLUME));
+			ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_REMOUNT_VOLUME));
 			return FALSE;
 		}
 	}
@@ -2283,7 +2283,7 @@ BOOL CreatePartition(HANDLE hDrive, int partition_style, int file_system, BOOL m
 	DRIVE_LAYOUT_INFORMATION_EX4 DriveLayoutEx = { 0 };
 	// Go for a 260 MB sized ESP by default to keep everyone happy, including 4K sector users:
 	// https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/configure-uefigpt-based-hard-drive-partitions
-	// and folks using MacOS: https://github.com/pbatard/rufus/issues/979
+	// and folks using MacOS: https://github.com/SKYIOUS/SkyImager/issues/979
 	LONGLONG esp_size = 260 * MB;
 	LONGLONG ClusterSize = (LONGLONG)ComboBox_GetCurItemData(hClusterSize);
 
@@ -2321,7 +2321,7 @@ BOOL CreatePartition(HANDLE hDrive, int partition_style, int file_system, BOOL m
 		// cylinder size that is itself aligned to the cluster size.
 		// If this actually breaks old systems, please send your complaints to IBM.
 		SelectedDrive.Partition[pi].Offset = CEILING_ALIGN(bytes_per_track, ClusterSize);
-		// GRUB2 no longer fits in the usual 31½ KB that the above computation provides
+		// GRUB2 no longer fits in the usual 31Â½ KB that the above computation provides
 		// so just unconditionally double that size and get on with it.
 		SelectedDrive.Partition[pi].Offset *= 2;
 	}
@@ -2420,7 +2420,7 @@ BOOL CreatePartition(HANDLE hDrive, int partition_style, int file_system, BOOL m
 
 	// Build the DriveLayoutEx table
 	for (i = 0; i < pi; i++) {
-		uprintf("● Creating %S%s (offset: %lld, size: %s)", SelectedDrive.Partition[i].Name,
+		uprintf("â— Creating %S%s (offset: %lld, size: %s)", SelectedDrive.Partition[i].Name,
 			(wcsstr(SelectedDrive.Partition[i].Name, L"Partition") == NULL) ? " Partition" : "",
 			SelectedDrive.Partition[i].Offset,
 			SizeToHumanReadable(SelectedDrive.Partition[i].Size, TRUE, FALSE));

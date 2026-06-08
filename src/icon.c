@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Extract icon from executable and set autorun.inf
- * Copyright © 2012-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2012-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "missing.h"
 #include "resource.h"
 #include "msapi_utf8.h"
@@ -182,7 +182,7 @@ BOOL SetAutorun(const char* path)
 	GetWindowTextW(hLabel, wlabel, ARRAYSIZE(wlabel));
 	GetWindowTextW(hMainDialog, wRufusVersion, ARRAYSIZE(wRufusVersion));
 	// coverity[invalid_type]
-	fwprintf_s(fd, L"; Created by %s\n; " LTEXT(RUFUS_URL) L"\n", wRufusVersion);
+	fwprintf_s(fd, L"; Created by %s\n; " LTEXT(SKYIMAGER_URL) L"\n", wRufusVersion);
 	// coverity[invalid_type]
 	fwprintf_s(fd, L"[autorun]\nicon  = autorun.ico\nlabel = %s\n", wlabel);
 	fclose(fd);

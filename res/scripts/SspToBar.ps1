@@ -7,7 +7,7 @@
 # License: BSD 3-Clause
 #
 
-# This script is generates the pe256ssp[] byte array from Rufus' db.h
+# This script is generates the pe256ssp[] byte array from SkyImager' db.h
 
 #region Parameters
 [cmdletbinding()]

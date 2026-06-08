@@ -1,5 +1,5 @@
 This directory contains a flat image of the FAT UEFI:NTFS partition added by
-Rufus for NTFS and exFAT UEFI boot support.
+SkyImager for NTFS and exFAT UEFI boot support.
 
 See https://github.com/pbatard/uefi-ntfs for more details.
 

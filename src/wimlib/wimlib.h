@@ -400,7 +400,7 @@
 #include <stdint.h>
 #include <time.h>
 
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 #include "msapi_utf8.h"
 #endif
 
@@ -2759,7 +2759,7 @@ wimlib_add_tree(WIMStruct *wim, int image,
 		const wimlib_tchar *fs_source_path,
 		const wimlib_tchar *wim_target_path, int add_flags);
 
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 static __inline int
 wimlib_add_treeU(WIMStruct *wim, int image,
 		const char *fs_source_path,
@@ -3040,7 +3040,7 @@ WIMLIBAPI int
 wimlib_extract_image(WIMStruct *wim, int image,
 		     const wimlib_tchar *target, int extract_flags);
 
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 static __inline int
 wimlib_extract_imageU(WIMStruct *wim, int image,
 		     const char *target, int extract_flags)
@@ -3215,7 +3215,7 @@ wimlib_extract_paths(WIMStruct *wim,
 		     size_t num_paths,
 		     int extract_flags);
 
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 static __inline int
 wimlib_extract_pathsU(WIMStruct* wim,
 	int image,
@@ -3799,7 +3799,7 @@ wimlib_open_wim(const wimlib_tchar *wim_file,
 		int open_flags,
 		WIMStruct **wim_ret);
 
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 static __inline int
 wimlib_open_wimU(const char* wim_file,
 	int open_flags,
@@ -4434,7 +4434,7 @@ wimlib_split(WIMStruct *wim,
 	     uint64_t part_size,
 	     int write_flags);
 
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 static __inline int
 wimlib_splitU(WIMStruct *wim,
 	     const char *swm_name,

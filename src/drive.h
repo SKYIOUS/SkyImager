@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Drive access function calls
- * Copyright © 2011-2025 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2011-2025 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@
 #define VDS_RESCAN_REFRESH                  0x00000001
 #define VDS_RESCAN_REENUMERATE              0x00000002
 
-#define VDS_SET_ERROR(hr) do { if (hr != S_OK) { SetLastError((DWORD)hr); ErrorStatus = RUFUS_ERROR(ERROR_GEN_FAILURE); } } while(0)
+#define VDS_SET_ERROR(hr) do { if (hr != S_OK) { SetLastError((DWORD)hr); ErrorStatus = SKYIMAGER_ERROR(ERROR_GEN_FAILURE); } } while(0)
 
 /* We need a redef of these MS structure */
 typedef struct {
@@ -360,8 +360,8 @@ typedef struct {
 		ULONG Allowed;
 		ULONG Default;
 	} ClusterSize[FS_MAX];
-} RUFUS_DRIVE_INFO;
-extern RUFUS_DRIVE_INFO SelectedDrive;
+} SKYIMAGER_DRIVE_INFO;
+extern SKYIMAGER_DRIVE_INFO SelectedDrive;
 extern int partition_index[PI_MAX];
 
 BOOL SetAutoMount(BOOL enable);

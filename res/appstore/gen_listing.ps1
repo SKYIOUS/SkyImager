@@ -1,5 +1,5 @@
-# PowerShell script to parse rufus.loc and create a listing.csv
-# Copyright © 2023 Pete Batard <pete@akeo.ie>
+﻿# PowerShell script to parse skyimager.loc and create a listing.csv
+# Copyright Â© 2023 Pete Batard <pete@akeo.ie>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ Add-Member -InputObject $translated_msgs -NotePropertyName MSG_ID -NotePropertyV
 
 $lang = ""
 $langs = @()
-foreach ($line in Get-Content ..\loc\rufus.loc) {
+foreach ($line in Get-Content ..\loc\skyimager.loc) {
   # Get the language for the current section
   if ($line -Like "l *") {
     $lang = $line.split(" ",[System.StringSplitOptions]::RemoveEmptyEntries)[1].Trim('"').ToLower()
@@ -81,9 +81,9 @@ foreach ($line in Get-Content ..\loc\rufus.loc) {
       # Insert URLs in the relevant messages
       if ($msg.Contains("%s")) {
         $url = switch ($msg_id) {
-          MSG_901 { "https://rufus.ie" }
-          MSG_902 { "https://github.com/pbatard/rufus" }
-          MSG_903 { "https://github.com/pbatard/rufus/blob/master/ChangeLog.txt" }
+          MSG_901 { "https://skyious.github.io/SkyImager" }
+          MSG_902 { "https://github.com/SKYIOUS/SkyImager" }
+          MSG_903 { "https://github.com/SKYIOUS/SkyImager/blob/master/ChangeLog.txt" }
         }
         $msg = $msg.Replace("%s", $url)
       }
@@ -120,7 +120,7 @@ foreach($row in $csv) {
     # Insert current year into CopyrightTrademarkInformation
     if ($row.Field -eq "CopyrightTrademarkInformation") {
       $year = Get-Date -Format "yyyy"
-      $row.default = "© 2011-" + $year + " Pete Batard"
+      $row.default = "Â© 2011-" + $year + " Pete Batard"
     } elseif ($row.Field -eq "ReleaseNotes") {
       $section = 0
       $row.default = ""
@@ -133,7 +133,7 @@ foreach($row in $csv) {
           if ($row.default) {
             $row.default += "`n"
           }
-          $row.default += $line.Replace("    ", "• ")
+          $row.default += $line.Replace("    ", "â€¢ ")
         }
       }
     } elseif ($row.Field.StartsWith("DesktopScreenshot")) {

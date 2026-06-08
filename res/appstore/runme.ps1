@@ -1,5 +1,5 @@
-# PowerShell script to parse listing.csv and retrieve our screenshots
-# Copyright © 2023 Pete Batard <pete@akeo.ie>
+﻿# PowerShell script to parse listing.csv and retrieve our screenshots
+# Copyright Â© 2023 Pete Batard <pete@akeo.ie>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ try {
 } catch {}
 
 # NB: All languages IDs from the .csv are lowercase version of the one
-# from rufus.loc, except for 'sr-RS' that becomes 'sr-latn-rs'. 
+# from skyimager.loc, except for 'sr-RS' that becomes 'sr-latn-rs'. 
 
 function GetCellByName([object]$csv, [string]$row_name, [string]$column_name)
 {

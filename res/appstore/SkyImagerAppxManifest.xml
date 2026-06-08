@@ -8,12 +8,12 @@
  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
  xmlns:build="http://schemas.microsoft.com/developer/appx/2015/build">
   <Identity
-   Name="19453.net.Rufus"
+   Name="19453.net.SkyImager"
    Publisher="CN=7AC86D13-3E5A-491A-ADD5-80095C212740"
    Version="@VERSION@"
    ProcessorArchitecture="@ARCH@"/>
   <Properties>
-    <DisplayName>Rufus</DisplayName>
+    <DisplayName>SkyImager</DisplayName>
     <PublisherDisplayName>Akeo Consulting</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>
@@ -70,12 +70,12 @@
   </Resources>
   <Applications>
     <Application
-     Id="Rufus"
-     Executable="rufus\rufus.exe"
+     Id="SkyImager"
+     Executable="skyimager\skyimager.exe"
      EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements
-       DisplayName="Rufus"
-       Description="Rufus"
+       DisplayName="SkyImager"
+       Description="SkyImager"
        BackgroundColor="transparent"
        Square150x150Logo="Images\Square150x150Logo.png"
        Square44x44Logo="Images\Square44x44Logo.png">

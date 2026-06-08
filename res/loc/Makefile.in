@@ -368,7 +368,7 @@ uninstall-am:
 
 all-local: embedded.loc
 
-embedded.loc: rufus.loc
+embedded.loc: skyimager.loc
 	$(AM_V_SED) -f $(srcdir)/embedded.sed $< > $@
 
 clean-local:

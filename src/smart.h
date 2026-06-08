@@ -1,11 +1,11 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * SMART HDD vs Flash detection (using ATA over USB, S.M.A.R.T., etc.)
- * Copyright © 2013-2014 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2013-2014 Pete Batard <pete@akeo.ie>
  *
  * Based in part on Smartmontools: http://smartmontools.sourceforge.net
- * Copyright © 2006-12 Douglas Gilbert <dgilbert@interlog.com>
- * Copyright © 2009-13 Christian Franke <smartmontools-support@lists.sourceforge.net>
+ * Copyright Â© 2006-12 Douglas Gilbert <dgilbert@interlog.com>
+ * Copyright Â© 2009-13 Christian Franke <smartmontools-support@lists.sourceforge.net>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

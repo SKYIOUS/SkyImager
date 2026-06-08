@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Networking functionality (web file download, check for update, etc.)
- * Copyright © 2012-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2012-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include <time.h>
 #include <virtdisk.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "missing.h"
 #include "resource.h"
 #include "msapi_utf8.h"
@@ -125,7 +125,7 @@ static HINTERNET GetInternetSession(const char* user_agent, BOOL bRetry)
 			hr = INetworkListManager_get_IsConnectedToInternet(pNetworkListManager, &InternetConnection);
 			// INetworkListManager may fail with ERROR_SERVICE_DEPENDENCY_FAIL if the DHCP service
 			// is not running, in which case we must fall back to using InternetGetConnectedState().
-			// See https://github.com/pbatard/rufus/issues/1801.
+			// See https://github.com/SKYIOUS/SkyImager/issues/1801.
 			if (hr == HRESULT_FROM_WIN32(ERROR_SERVICE_DEPENDENCY_FAIL)) {
 				InternetConnection = InternetGetConnectedState(&dwFlags, 0) ? VARIANT_TRUE : VARIANT_FALSE;
 				break;
@@ -140,7 +140,7 @@ static HINTERNET GetInternetSession(const char* user_agent, BOOL bRetry)
 		goto out;
 	}
 	static_sprintf(default_agent, APPLICATION_NAME "/%d.%d.%d (Windows NT %lu.%lu%s)",
-		rufus_version[0], rufus_version[1], rufus_version[2],
+		skyimager_version[0], skyimager_version[1], skyimager_version[2],
 		WindowsVersion.Major, WindowsVersion.Minor, is_WOW64() ? "; WOW64" : "");
 	hSession = InternetOpenA((user_agent == NULL) ? default_agent : user_agent,
 		INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
@@ -242,7 +242,7 @@ uint64_t DownloadToFileOrBufferEx(const char* url, const char* file, const char*
 	HttpQueryInfoA(hRequest, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, (LPVOID)&DownloadStatus, &dwSize, NULL);
 	if (DownloadStatus != 200) {
 		error_code = ERROR_INTERNET_ITEM_NOT_FOUND;
-		SetLastError(RUFUS_ERROR(error_code));
+		SetLastError(SKYIMAGER_ERROR(error_code));
 		uprintf("%s '%s': %d", (DownloadStatus == 404) ? "File not found" : "Unable to access file", url, DownloadStatus);
 		goto out;
 	}
@@ -306,7 +306,7 @@ uint64_t DownloadToFileOrBufferEx(const char* url, const char* file, const char*
 
 	if (size != total_size) {
 		uprintf("Could not download complete file - read: %lld bytes, expected: %lld bytes", size, total_size);
-		ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 		goto out;
 	} else {
 		DownloadStatus = 200;
@@ -365,15 +365,15 @@ DWORD DownloadSignedFile(const char* url, const char* file, HWND hProgressDialog
 		goto out;
 	sig_len = (DWORD)DownloadToFileOrBuffer(url_sig, NULL, &sig, NULL, FALSE);
 	if ((sig_len != RSA_SIGNATURE_SIZE) || (!ValidateOpensslSignature(buf, buf_len, sig, sig_len))) {
-		uprintf("FATAL: Download signature is invalid ✗");
+		uprintf("FATAL: Download signature is invalid âœ—");
 		DownloadStatus = 403;	// Forbidden
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_BAD_SIGNATURE));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_BAD_SIGNATURE));
 		SendMessage(GetDlgItem(hProgressDialog, IDC_PROGRESS), PBM_SETSTATE, (WPARAM)PBST_ERROR, 0);
 		SetTaskbarProgressState(TASKBAR_ERROR);
 		goto out;
 	}
 
-	uprintf("Download signature is valid ✓");
+	uprintf("Download signature is valid âœ“");
 	DownloadStatus = 206;	// Partial content
 	hFile = CreateFileU(file, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hFile == INVALID_HANDLE_VALUE) {
@@ -523,7 +523,7 @@ static DWORD WINAPI CheckForUpdatesThread(LPVOID param)
 {
 	BOOL releases_only = TRUE, found_new_version = FALSE;
 	int status = 0;
-	const char* server_url = RUFUS_URL "/";
+	const char* server_url = SKYIMAGER_URL "/";
 	int i, j, k, max_channel, verbose = 0, verpos[4];
 	static const char* channel[] = { "release", "beta", "test" };		// release channel
 	const char* accept_types[] = { "*/*\0", NULL };
@@ -583,7 +583,7 @@ static DWORD WINAPI CheckForUpdatesThread(LPVOID param)
 	hostname[sizeof(hostname)-1] = 0;
 
 	static_sprintf(agent, APPLICATION_NAME "/%d.%d.%d (Windows NT %lu.%lu%s)",
-		rufus_version[0], rufus_version[1], rufus_version[2],
+		skyimager_version[0], skyimager_version[1], skyimager_version[2],
 		WindowsVersion.Major, WindowsVersion.Minor, is_WOW64() ? "; WOW64" : "");
 	hSession = GetInternetSession(NULL, FALSE);
 	if (hSession == NULL)
@@ -604,7 +604,7 @@ static DWORD WINAPI CheckForUpdatesThread(LPVOID param)
 #else
 	max_channel = releases_only ? 1 : (int)ARRAYSIZE(channel) - 1;
 #endif
-	vuprintf("Using %s for the update check", RUFUS_URL);
+	vuprintf("Using %s for the update check", SKYIMAGER_URL);
 	for (k = 0; (k < max_channel) && (!found_new_version); k++) {
 		// Get the arch name and convert it lowercase
 		char* archname = strdup(GetArchName(WindowsVersion.Arch));
@@ -701,10 +701,10 @@ static DWORD WINAPI CheckForUpdatesThread(LPVOID param)
 		static_sprintf(sigpath, "%s/%s.sig", server_url, urlpath);
 		dwDownloaded = (DWORD)DownloadToFileOrBuffer(sigpath, NULL, &sig, NULL, FALSE);
 		if ((dwDownloaded != RSA_SIGNATURE_SIZE) || (!ValidateOpensslSignature(buf, dwTotalSize, sig, dwDownloaded))) {
-			uprintf("FATAL: Version signature is invalid ✗");
+			uprintf("FATAL: Version signature is invalid âœ—");
 			goto out;
 		}
-		vuprintf("Version signature is valid ✓");
+		vuprintf("Version signature is valid âœ“");
 
 		status++;
 		parse_update(buf, dwTotalSize + 1);
@@ -714,7 +714,7 @@ static DWORD WINAPI CheckForUpdatesThread(LPVOID param)
 		vuprintf("  platform_min: %d.%d", update.platform_min[0], update.platform_min[1]);
 		vuprintf("  url: %s", update.download_url);
 
-		found_new_version = ((to_uint64_t(update.version) > to_uint64_t(rufus_version)) || (force_update))
+		found_new_version = ((to_uint64_t(update.version) > to_uint64_t(skyimager_version)) || (force_update))
 			&& ((WindowsVersion.Major > update.platform_min[0])
 				|| ((WindowsVersion.Major == update.platform_min[0]) && (WindowsVersion.Minor >= update.platform_min[1])));
 		uprintf("N%sew %s version found%c", found_new_version ? "" : "o n", channel[k], found_new_version ? '!' : '.');
@@ -802,10 +802,10 @@ static DWORD WINAPI DownloadISOThread(LPVOID param)
 	static_sprintf(icon_path, "%s%s.ico", temp_dir, APPLICATION_NAME);
 	ExtractAppIcon(icon_path, TRUE);
 
-//#define FORCE_URL "https://github.com/pbatard/rufus/raw/master/res/loc/test/windows_to_go.iso"
+//#define FORCE_URL "https://github.com/SKYIOUS/SkyImager/raw/master/res/loc/test/windows_to_go.iso"
 //#define FORCE_URL "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-9.8.0-amd64-netinst.iso"
 #if !defined(FORCE_URL)
-#if defined(RUFUS_TEST)
+#if defined(SKYIMAGER_TEST)
 	IGNORE_RETVAL(hFile);
 	IGNORE_RETVAL(sig_url);
 	IGNORE_RETVAL(dwCompressedSize);
@@ -821,8 +821,8 @@ static DWORD WINAPI DownloadISOThread(LPVOID param)
 		static_sprintf(sig_url, "%s.sig", fido_url);
 		dwSize = (DWORD)DownloadToFileOrBuffer(sig_url, NULL, &sig, NULL, FALSE);
 		if ((dwSize != RSA_SIGNATURE_SIZE) || (!ValidateOpensslSignature(compressed, dwCompressedSize, sig, dwSize))) {
-			uprintf("FATAL: Download signature is invalid ✗");
-			ErrorStatus = RUFUS_ERROR(APPERR(ERROR_BAD_SIGNATURE));
+			uprintf("FATAL: Download signature is invalid âœ—");
+			ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_BAD_SIGNATURE));
 			SendMessage(hProgress, PBM_SETSTATE, (WPARAM)PBST_ERROR, 0);
 			SetTaskbarProgressState(TASKBAR_ERROR);
 			safe_free(compressed);
@@ -830,7 +830,7 @@ static DWORD WINAPI DownloadISOThread(LPVOID param)
 			goto out;
 		}
 		free(sig);
-		uprintf("Download signature is valid ✓");
+		uprintf("Download signature is valid âœ“");
 		uncompressed_size = *((uint64_t*)&compressed[5]);
 		if ((uncompressed_size < 1 * MB) && (bled_init(0, uprintf, NULL, NULL, NULL, NULL, &ErrorStatus) >= 0)) {
 			fido_script = malloc((size_t)uncompressed_size);
@@ -841,7 +841,7 @@ static DWORD WINAPI DownloadISOThread(LPVOID param)
 		if (size != uncompressed_size) {
 			uprintf("FATAL: Could not uncompressed download script");
 			safe_free(fido_script);
-			ErrorStatus = RUFUS_ERROR(ERROR_INVALID_DATA);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_INVALID_DATA);
 			SendMessage(hProgress, PBM_SETSTATE, (WPARAM)PBST_ERROR, 0);
 			SetTaskbarProgressState(TASKBAR_ERROR);
 			goto out;
@@ -863,7 +863,7 @@ static DWORD WINAPI DownloadISOThread(LPVOID param)
 	// - Create the file in the user's AppData temp directory => TOCTOUs can't be enacted by a different user
 	// - Create the file with Administrator access only => TOCTOUs require elevated privileges (in which case
 	// the machine is already compromised anyway, so TOCTOU attacks become entirely moot)
-	// See https://github.com/pbatard/rufus/security/advisories/GHSA-hcx5-hrhj-xhq9 and CVE-2026-23988.
+	// See https://github.com/SKYIOUS/SkyImager/security/advisories/GHSA-hcx5-hrhj-xhq9 and CVE-2026-23988.
 	static_sprintf(script_path, "%s%s.ps1", temp_dir, GuidToString(&guid, TRUE));
 	hFile = CreateFileRestrictedU(script_path, GENERIC_WRITE, FILE_SHARE_READ, CREATE_ALWAYS, FILE_ATTRIBUTE_READONLY);
 	if (hFile == INVALID_HANDLE_VALUE) {
@@ -900,16 +900,16 @@ static DWORD WINAPI DownloadISOThread(LPVOID param)
 		"-File \"%s\" -PipeName %s -LocData \"%s\" -Icon \"%s\" -AppTitle \"%s\" -PlatformArch \"%s\"",
 		powershell_path, script_path, &pipe[9], locale_str, icon_path, lmprintf(MSG_149), GetArchName(NativeMachine));
 
-#ifndef RUFUS_TEST
+#ifndef SKYIMAGER_TEST
 	// Because we can't force PowerShell to do it, we validate the signature of the local script.
 	if (ValidateSignature(INVALID_HANDLE_VALUE, script_path) != NO_ERROR) {
-		uprintf("FATAL: Script signature is invalid ✗");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_BAD_SIGNATURE));
+		uprintf("FATAL: Script signature is invalid âœ—");
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_BAD_SIGNATURE));
 		SendMessage(hProgress, PBM_SETSTATE, (WPARAM)PBST_ERROR, 0);
 		SetTaskbarProgressState(TASKBAR_ERROR);
 		goto out;
 	}
-	uprintf("Script signature is valid ✓");
+	uprintf("Script signature is valid âœ“");
 #endif
 
 	ErrorStatus = 0;
@@ -959,7 +959,7 @@ out:
 	safe_closehandle(hFile);
 	if (icon_path[0] != '\0')
 		DeleteFileU(icon_path);
-#if !defined(RUFUS_TEST)
+#if !defined(SKYIMAGER_TEST)
 	if (script_path[0] != '\0') {
 		SetFileAttributesU(script_path, FILE_ATTRIBUTE_NORMAL);
 		DeleteFileU(script_path);
@@ -976,7 +976,7 @@ BOOL DownloadISO()
 {
 	if (CreateThread(NULL, 0, DownloadISOThread, NULL, 0, NULL) == NULL) {
 		uprintf("Unable to start Windows ISO download thread");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_START_THREAD));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_START_THREAD));
 		SendMessage(hMainDialog, UM_ENABLE_CONTROLS, 0, 0);
 		return FALSE;
 	}

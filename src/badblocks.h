@@ -28,9 +28,9 @@ typedef struct bb_struct_u64_iterate      *bb_badblocks_iterate;
 typedef struct bb_struct_u64_list         *bb_u64_list;
 typedef struct bb_struct_u64_iterate      *bb_u64_iterate;
 
-#define BB_ET_NO_MEMORY                   RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY)
-#define BB_ET_MAGIC_BADBLOCKS_LIST        RUFUS_ERROR(ERROR_OBJECT_IN_LIST)
-#define BB_ET_MAGIC_BADBLOCKS_ITERATE     RUFUS_ERROR(ERROR_INVALID_BLOCK)
+#define BB_ET_NO_MEMORY                   SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY)
+#define BB_ET_MAGIC_BADBLOCKS_LIST        SKYIMAGER_ERROR(ERROR_OBJECT_IN_LIST)
+#define BB_ET_MAGIC_BADBLOCKS_ITERATE     SKYIMAGER_ERROR(ERROR_INVALID_BLOCK)
 
 #define BB_CHECK_MAGIC(struct, code)      if ((struct)->magic != (code)) return (code)
 #define BB_BAD_BLOCKS_THRESHOLD           256

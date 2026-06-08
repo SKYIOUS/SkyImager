@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|ARM">
@@ -75,9 +75,9 @@
     <ClInclude Include="..\src\ms-sys\inc\mbr_grub2.h" />
     <ClInclude Include="..\src\ms-sys\inc\mbr_isolinux.h" />
     <ClInclude Include="..\src\ms-sys\inc\mbr_kolibri.h" />
-    <ClInclude Include="..\src\ms-sys\inc\mbr_msg_rufus.h" />
+    <ClInclude Include="..\src\ms-sys\inc\mbr_msg_skyimager.h" />
     <ClInclude Include="..\src\ms-sys\inc\mbr_reactos.h" />
-    <ClInclude Include="..\src\ms-sys\inc\mbr_rufus.h" />
+    <ClInclude Include="..\src\ms-sys\inc\mbr_skyimager.h" />
     <ClInclude Include="..\src\ms-sys\inc\mbr_syslinux.h" />
     <ClInclude Include="..\src\ms-sys\inc\mbr_vista.h" />
     <ClInclude Include="..\src\ms-sys\inc\mbr_win7.h" />

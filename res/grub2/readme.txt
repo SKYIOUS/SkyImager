@@ -1,4 +1,4 @@
-This directory contains the Grub 2.0 boot records that are used by Rufus
+This directory contains the Grub 2.0 boot records that are used by SkyImager
 
 * boot.img and core.img were created from https://ftp.gnu.org/gnu/grub/grub-2.14.tar.xz
   with https://github.com/gentoo/gentoo/raw/d51cbeb087dbbe979ff29af645f32071cce2834d/sys-boot/grub/files/grub-2.14-revert-image-base.patch
@@ -18,9 +18,9 @@ This directory contains the Grub 2.0 boot records that are used by Rufus
      they pass 0x00 or 0x01 even when booted from 0x80.  */
 
 * Note that, for convenience reasons, the content of boot.img is *not* the one that
-  Rufus processes when writing the MBR.
+  SkyImager processes when writing the MBR.
   Instead, the byte array from src/ms-sys/inc/mbr_grub2.h (whose content is identical)
-  is what Rufus uses. If you modify these files, be mindful that you may also need
+  is what SkyImager uses. If you modify these files, be mindful that you may also need
   to update the array in mbr_grub2.h.
 
 * For details, see src/format.c, src/msys/br.c and src/msys/inc/mbr_grub2.h.

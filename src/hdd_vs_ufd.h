@@ -1,12 +1,12 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * SMART HDD vs Flash detection - isHDD() tables
- * Copyright © 2013-2023 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2013-2023 Pete Batard <pete@akeo.ie>
  *
  * Based in part on drivedb.h from Smartmontools:
  * http://svn.code.sf.net/p/smartmontools/code/trunk/smartmontools/drivedb.h
- * Copyright © 2003-11 Philip Williams, Bruce Allen
- * Copyright © 2008-13 Christian Franke <smartmontools-support@lists.sourceforge.net>
+ * Copyright Â© 2003-11 Philip Williams, Bruce Allen
+ * Copyright Â© 2008-13 Christian Franke <smartmontools-support@lists.sourceforge.net>
  *
  * Also based on entries listed in the identification flash database
  * (http://flashboot.ru/iflash/saved/) as well as the Linux USB IDs
@@ -303,7 +303,7 @@ static vidpid_score_t vidpid_score[] = {
 	{ 0x18a5, 0x3327, -20 },
 	// More Innostor
 	{ 0x1f75, 0x0917, -10 },	// Intenso Speed Line USB Device
-	// ??? (https://github.com/pbatard/rufus/issues/2247)
+	// ??? (https://github.com/SKYIOUS/SkyImager/issues/2247)
 	{ 0x23a9, 0xef18, -10 },
 	// No idea who these guys are. They don't exist in usb.ids.
 	{ 0x6557, 0x0021, -5 },

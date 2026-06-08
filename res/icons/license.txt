@@ -1,6 +1,6 @@
 Please note the following licensing information for the icons:
 
-o rufus*.* - Public Domain, courtesy of PC Unleashed
+o skyimager*.* - Public Domain, courtesy of PC Unleashed
   http://pcunleashed.com
 
 o hash-*.png, info-*.png, lang-*.png, log-*.png, save-*.png, settings-*.png

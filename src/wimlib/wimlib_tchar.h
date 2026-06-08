@@ -26,7 +26,7 @@ typedef wchar_t tchar;
 #  define tmempcpy	wmempcpy
 #  define tstrcat	wcscat
 #  define tstrcpy	wcscpy
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 #  define tprintf	wuprintf
 #else
 #  define tprintf	wprintf
@@ -37,7 +37,7 @@ typedef wchar_t tchar;
 #  define tsprintf	swprintf
 #endif
 #  define tsnprintf snwprintf
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 #  define tfprintf(f, ...)	((f == stdout || f == stderr) ? wuprintf(__VA_ARGS__) : fwprintf(f, __VA_ARGS__))
 #else
 #  define tfprintf	fwprintf
@@ -57,7 +57,7 @@ typedef wchar_t tchar;
 #  define tmemcmp	wmemcmp
 #  define tstrcasecmp	_wcsicmp
 #  define tstrftime	wcsftime
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 #  define tputchar(c)	wuprintf(L"%c", c)
 #  define tputc(c, f)	((f == stdout || f == stderr) ? wuprintf(L"%c", c) : _putw(c, f))
 #  define tputs(s)		wuprintf(L"%s\n", s)

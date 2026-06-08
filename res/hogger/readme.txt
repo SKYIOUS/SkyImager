@@ -1,4 +1,4 @@
-Rufus: The Reliable USB Formatting Utility - Commandline hogger
+SkyImager: The Reliable USB Formatting Utility - Commandline hogger
 
 # Description
 
@@ -65,5 +65,5 @@ link /subsystem:console /nodefaultlib /entry:main hogger.obj %SDK_LIB_DEST%\i386
 # Links
 
 [1] http://blogs.msdn.com/b/oldnewthing/archive/2009/01/01/9259142.aspx
-[2] https://github.com/pbatard/rufus/issues/161
+[2] https://github.com/pbatard/skyimager/issues/161
 [3] http://www.farmanager.com/

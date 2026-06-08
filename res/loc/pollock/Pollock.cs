@@ -1,7 +1,7 @@
-ï»¿/*
- * Rufus: The Reliable USB Formatting Utility
- * Poedit <-> rufus.loc conversion utility
- * Copyright Â© 2018-2026 Pete Batard <pete@akeo.ie>
+/*
+ * SkyImager: A modern design iteration of the trusted SkyImager utility. Precision performance, re-imagined presentation.
+ * Poedit <-> skyimager.loc conversion utility
+ * Copyright © 2018-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,10 +38,10 @@ using System.Threading;
 using System.Windows.Forms;
 
 [assembly: AssemblyTitle("Pollock")]
-[assembly: AssemblyDescription("Poedit â†” Rufus loc conversion utility")]
+[assembly: AssemblyDescription("Poedit ? SkyImager loc conversion utility")]
 [assembly: AssemblyCompany("Akeo Consulting")]
 [assembly: AssemblyProduct("Pollock")]
-[assembly: AssemblyCopyright("Copyright Â© 2018-2024 Pete Batard <pete@akeo.ie>")]
+[assembly: AssemblyCopyright("Copyright © 2018-2024 Pete Batard <pete@akeo.ie>")]
 [assembly: AssemblyTrademark("GNU GPLv3")]
 [assembly: AssemblyVersion("1.8.*")]
 
@@ -84,7 +84,7 @@ namespace pollock
         {
             if (this.group == "MSG")
                 return this.id;
-            return this.group + " â†’ " + this.id;
+            return this.group + " ? " + this.id;
         }
     }
 
@@ -114,9 +114,9 @@ namespace pollock
         private static string version_str = "v" + version[0].ToString() + "." + version[1].ToString();
         private static bool cancel_requested = false;
         private const string LANG_ID = "Language";
-        private const string LANG_NAME = "X-Rufus-LanguageName";
+        private const string LANG_NAME = "X-SkyImager-LanguageName";
         private const string LANG_VERSION = "Project-Id-Version";
-        private const string LANG_LCID = "X-Rufus-LCID";
+        private const string LANG_LCID = "X-SkyImager-LCID";
         private static Encoding encoding = new UTF8Encoding(false);
         private static List<string> rtl_languages = new List<string> { "ar-SA", "he-IL", "fa-IR" };
         private static Stopwatch sw = new System.Diagnostics.Stopwatch();
@@ -146,7 +146,7 @@ namespace pollock
         }
 
         /// <summary>
-        /// Import languages from an existing Rufus loc file
+        /// Import languages from an existing SkyImager loc file
         /// </summary>
         /// <param name="file">The name of the loc file.</param>
         /// <param name="select_id">(Optional) If specified, only the language with this id, along with en-US will be returned.</param>
@@ -349,7 +349,7 @@ namespace pollock
                         if (!old_en_US.id_to_str[id].EndsWith("\\n\""))
                         {
                             // ID exists in both but str has changed -> modified
-                            //Console.WriteLine($"MODIFIED: {id} = {old_en_US.id_to_str[id]} â†’ {cur_en_US.id_to_str[id]}");
+                            //Console.WriteLine($"MODIFIED: {id} = {old_en_US.id_to_str[id]} ? {cur_en_US.id_to_str[id]}");
                             modified_ids.Add(id);
                         }
                     }
@@ -363,7 +363,7 @@ namespace pollock
                 // Don't create the .pot if we are producing a merge
                 if (is_pot && old_en_US != null)
                     continue;
-                var target = path + (is_pot ? "rufus.pot" : lang.id + ".po");
+                var target = path + (is_pot ? "skyimager.pot" : lang.id + ".po");
                 if (old_en_US != null)
                     Console.Write($"Computing differences and creating '{target}'... ");
                 else
@@ -388,8 +388,8 @@ namespace pollock
                     writer.WriteLine($"\"Content-Type: text/plain; charset=UTF-8\\n\"");
                     writer.WriteLine($"\"Content-Transfer-Encoding: 8bit\\n\"");
                     writer.WriteLine($"\"X-Poedit-SourceCharset: UTF-8\\n\"");
-                    writer.WriteLine($"\"X-Rufus-LanguageName: {lang.name}\\n\"");
-                    writer.WriteLine($"\"X-Rufus-LCID: {lang.lcid}\\n\"");
+                    writer.WriteLine($"\"X-SkyImager-LanguageName: {lang.name}\\n\"");
+                    writer.WriteLine($"\"X-SkyImager-LCID: {lang.lcid}\\n\"");
 
                     var dupes = new List<string>();
 
@@ -404,7 +404,7 @@ namespace pollock
 
                         var cid_list = cur_en_US.id_to_str.Where(x => x.Value == en_str).Select(x => x.Key);
                         foreach (var cid in cid_list)
-                            writer.WriteLine($"#. â€¢ {cid}");
+                            writer.WriteLine($"#. • {cid}");
                         if (cid_list.Count() > 1)
                             dupes.Add(en_str);
 
@@ -553,15 +553,15 @@ namespace pollock
                     msg_type = 1;
                     msg_data[msg_type] = data.Substring(8, data.Length - 9);
                 }
-                else if (data.StartsWith("#. â€¢"))
+                else if (data.StartsWith("#. •"))
                 {
-                    if (data.StartsWith("#. â€¢ MSG"))
+                    if (data.StartsWith("#. • MSG"))
                     {
                         ids.Add(new Id("MSG", data.Substring(5).Trim()));
                     }
                     else
                     {
-                        string[] str = data.Substring(5).Split(new string[] { " â†’ " }, StringSplitOptions.None);
+                        string[] str = data.Substring(5).Split(new string[] { " ? " }, StringSplitOptions.None);
                         if (str.Length != 2)
                             Console.WriteLine($"ERROR: Invalid ID {data}");
                         else
@@ -648,10 +648,10 @@ namespace pollock
         }
 
         /// <summary>
-        /// Update a rufus.loc section from a language element.
+        /// Update a skyimager.loc section from a language element.
         /// </summary>
         /// <param name="lang">The Language elements to update.</param>
-        /// <param name="path">(Optional) The path where 'rufus.loc' is located.</param>
+        /// <param name="path">(Optional) The path where 'skyimager.loc' is located.</param>
         /// <returns>true on success, false on error.</returns>
         static bool UpdateLocFile(Language lang, string path = null)
         {
@@ -662,14 +662,14 @@ namespace pollock
             if (!path.EndsWith("\\"))
                 path += '\\';
 
-            var target = path + "rufus.loc";
+            var target = path + "skyimager.loc";
             var lines = File.ReadAllLines(target);
             using (var writer = new StreamWriter(target, false, encoding))
             {
                 bool skip = false;
                 foreach (var line in lines)
                 {
-                    if (line.StartsWith($"# â€¢ v"))
+                    if (line.StartsWith($"# • v"))
                     {
                         var parts = line.Split('"');
                         if (parts.Count() < 2)
@@ -682,7 +682,7 @@ namespace pollock
                             writer.WriteLine(line);
                             continue;
                         }
-                        writer.WriteLine($"# â€¢ v{lang.version,-4} \"{lang.id}\" \"{lang.name}\"");
+                        writer.WriteLine($"# • v{lang.version,-4} \"{lang.id}\" \"{lang.name}\"");
                         continue;
                     }
                     else if (line.StartsWith($"l \"{lang.id}\""))
@@ -703,10 +703,10 @@ namespace pollock
         }
 
         /// <summary>
-        /// Create a new rufus.loc from a list of Language elements.
+        /// Create a new skyimager.loc from a list of Language elements.
         /// </summary>
         /// <param name="list">The list of Language elements.</param>
-        /// <param name="path">(Optional) The path where the new 'rufus.loc' should be created.</param>
+        /// <param name="path">(Optional) The path where the new 'skyimager.loc' should be created.</param>
         /// <returns>true on success, false on error.</returns>
         static bool SaveLocFile(List<Language> list, string path = null)
         {
@@ -716,14 +716,14 @@ namespace pollock
                 path = app_dir;
             if (!path.EndsWith("\\"))
                 path += '\\';
-            var target = path + "rufus.loc";
+            var target = path + "skyimager.loc";
 
             sw.Start();
 
             Console.WriteLine($"Creating '{target}':");
             using (var writer = new StreamWriter(target, false, encoding))
             {
-                var notice = $"### Autogenerated by {app_name} {version_str} for use with Rufus - DO NOT EDIT!!! ###";
+                var notice = $"### Autogenerated by {app_name} {version_str} for use with SkyImager - DO NOT EDIT!!! ###";
                 var sep = new String('#', notice.Length);
                 writer.WriteLine(sep);
                 writer.WriteLine(notice);
@@ -732,7 +732,7 @@ namespace pollock
                 writer.WriteLine("# List of all languages included in this file (with version)");
                 foreach (var lang in list)
                 {
-                    writer.WriteLine($"# â€¢ v{lang.version, -4} \"{lang.id}\" \"{lang.name}\"");
+                    writer.WriteLine($"# • v{lang.version, -4} \"{lang.id}\" \"{lang.name}\"");
                 }
                 foreach (var lang in list)
                 {
@@ -900,13 +900,13 @@ namespace pollock
                 e.Cancel = true;
                 cancel_requested = true;
             };
-            Console.WriteLine($"{app_name} {version_str} - Poedit to rufus.loc conversion utility");
+            Console.WriteLine($"{app_name} {version_str} - Poedit to skyimager.loc conversion utility");
             Console.WriteLine();
 
-            string loc_url = "https://github.com/pbatard/rufus/raw/master/res/loc/rufus.loc";
-            string ver_url = "https://rufus.ie/Loc.ver";
-            string rufus_url = null;
-            string rufus_file = null;
+            string loc_url = "https://github.com/SKYIOUS/SkyImager/raw/master/res/loc/skyimager.loc";
+            string ver_url = "https://skyious.github.io/SkyImager/Loc.ver";
+            string skyimager_url = null;
+            string skyimager_file = null;
             string download_url = null;
             string po_file = null;
             string loc_file = null;
@@ -925,7 +925,7 @@ namespace pollock
                 }
                 else if (arg.Contains("l"))
                 {
-                    loc_file = @"..\rufus.loc";
+                    loc_file = @"..\skyimager.loc";
                     foreach (var line in File.ReadAllLines(loc_file))
                     {
                         if (line.StartsWith("l "))
@@ -966,12 +966,12 @@ namespace pollock
                     case "download_url":
                         download_url = parts[1].Trim();
                         break;
-                    case "rufus_url":
-                        rufus_url = parts[1].Trim();
+                    case "skyimager_url":
+                        skyimager_url = parts[1].Trim();
                         break;
                 }
             }
-            if ((download_url == null) || (rufus_url == null) || (update_version[0] == 0))
+            if ((download_url == null) || (skyimager_url == null) || (update_version[0] == 0))
             {
                 Console.WriteLine("FAILED");
                 goto Exit;
@@ -993,24 +993,24 @@ namespace pollock
                 }
             }
 
-            if (rufus_url != null)
+            if (skyimager_url != null)
             {
-                // Download the latest version of Rufus to use for translations
-                rufus_file = rufus_url.Split('/').Last();
-                Console.Write($"Checking for the presence of '{rufus_file}'... ");
-                if (File.Exists(rufus_file))
+                // Download the latest version of SkyImager to use for translations
+                skyimager_file = skyimager_url.Split('/').Last();
+                Console.Write($"Checking for the presence of '{skyimager_file}'... ");
+                if (File.Exists(skyimager_file))
                 {
                     Console.WriteLine("FOUND");
                 }
                 else
                 {
-                    var rufus_name = rufus_url.Split('/').Last();
+                    var skyimager_name = skyimager_url.Split('/').Last();
                     Console.WriteLine("MISSING");
-                    Console.WriteLine($"{rufus_name} doesn't exist in your translation directory.");
+                    Console.WriteLine($"{skyimager_name} doesn't exist in your translation directory.");
                     Console.WriteLine("This is the required version to validate your changes.");
-                    if (PromptForQuestion($"Do you want to download {rufus_name}?")) {
+                    if (PromptForQuestion($"Do you want to download {skyimager_name}?")) {
                         Console.SetCursorPosition(console_x_pos, Console.CursorTop - 1);
-                        DownloadFile(rufus_url);
+                        DownloadFile(skyimager_url);
                     }
                 }
             }
@@ -1024,9 +1024,9 @@ namespace pollock
             }
             else
             {
-                var local_loc = @"C:\Projects\rufus\res\loc\rufus.loc";
+                var local_loc = @"C:\Projects\skyimager\res\loc\skyimager.loc";
                 Console.Write($"Copying loc file from '{local_loc}'... ");
-                File.Copy(local_loc, "rufus.loc", true);
+                File.Copy(local_loc, "skyimager.loc", true);
             }
 
             loc_file = loc_url.Split('/').Last();
@@ -1100,7 +1100,7 @@ Retry:
             }
             else
             {
-                var old_loc_file = $"rufus-{list[index][2]}.loc";
+                var old_loc_file = $"skyimager-{list[index][2]}.loc";
                 Console.WriteLine($"Note: This language is at v{list[index][2]} but the English base is at v{list[0][2]}.");
                 Console.Write($"Checking for the presence of '{old_loc_file}' to compute the differences... ");
                 if (File.Exists(old_loc_file))
@@ -1111,12 +1111,12 @@ Retry:
                 {
                     Console.WriteLine("MISSING");
                     Console.Write($"Downloading '{old_loc_file}'... ");
-                    var url = "https://github.com/pbatard/rufus/releases/tag/v" + list[index][2];
+                    var url = "https://github.com/SKYIOUS/SkyImager/releases/tag/v" + list[index][2];
                     var str = DownloadString(url);
                     if (str == null)
                         goto Exit;
-                    var sha = str.Substring(str.IndexOf("/pbatard/rufus/commit/") + 22, 40);
-                    url = "https://github.com/pbatard/rufus/raw/" + sha + "/res/loc/rufus.loc";
+                    var sha = str.Substring(str.IndexOf("/SKYIOUS/SkyImager/commit/") + 22, 40);
+                    url = "https://github.com/SKYIOUS/SkyImager/raw/" + sha + "/res/loc/skyimager.loc";
                     if (!DownloadFile(url, old_loc_file))
                         goto Exit;
                 }
@@ -1153,8 +1153,8 @@ Retry:
                 Console.WriteLine($"* The {list[index][0]} translation file ({list[index][1]}) is now ready to be edited in Poedit.");
                 Console.WriteLine("* Please look for entries highlighted in orange: they are the ones requiring an update.");
                 Console.WriteLine("*");
-                Console.WriteLine("* Whenever you save your changes in Poedit, a new 'rufus.loc' will be generated so");
-                Console.WriteLine($"* that you can test it with '{rufus_file}' in the same directory.");
+                Console.WriteLine("* Whenever you save your changes in Poedit, a new 'skyimager.loc' will be generated so");
+                Console.WriteLine($"* that you can test it with '{skyimager_file}' in the same directory.");
                 Console.WriteLine("*");
                 Console.WriteLine("* PLEASE DO NOT CLOSE THIS CONSOLE APPLICATION - IT NEEDS TO RUN IN THE BACKGROUND!");
                 Console.WriteLine("* Instead, when you are done editing your translation, simply close Poedit.");
@@ -1236,7 +1236,7 @@ Retry:
 
             if ((list.Count >= 2) && (index >= 0))
             {
-                Process.Start($"mailto:pete@akeo.ie?subject=Rufus%20{list[index][0]}%20translation%20v{list[0][2]}%20update" +
+                Process.Start($"mailto:pete@akeo.ie?subject=SkyImager%20{list[index][0]}%20translation%20v{list[0][2]}%20update" +
                     $"&body=Hi%20Pete,%0D%0A%0D%0APlease%20find%20attached%20the%20latest%20{list[index][0]}%20translation." +
                     $"%0D%0A%0D%0A<PLEASE%20ATTACH%20'{app_dir}{po_file}'%20AND%20REMOVE%20THIS%20LINE>" +
                     $"%0D%0A%0D%0ARegards,");

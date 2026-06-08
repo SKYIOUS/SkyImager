@@ -1,12 +1,12 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * ntdll definitions & process search functionality
  *
  * Modified from System Informer (a.k.a. Process Hacker):
  *   https://github.com/winsiderss/systeminformer
- * Copyright © 2017-2026 Pete Batard <pete@akeo.ie>
- * Copyright © 2017 dmex
- * Copyright © 2009-2016 wj32
+ * Copyright Â© 2017-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2017 dmex
+ * Copyright Â© 2009-2016 wj32
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

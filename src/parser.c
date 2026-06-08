@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Elementary Unicode compliant find/replace parser
- * Copyright © 2012-2025 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2012-2025 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include <io.h>
 #include <fcntl.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "missing.h"
 #include "msapi_utf8.h"
 #include "localization.h"
@@ -345,7 +345,7 @@ BOOL get_supported_locales(const char* filename)
 					last_lcmd->ctrl_id |= LOC_NEEDS_UPDATE;
 					luprintf("the version of this translation is older than the base one and may result in some messages not being properly translated.\n"
 						"If you are the translator, please update your translation with the changes that intervened between v%d.%d and v%d.%d.\n"
-						"See https://github.com/pbatard/rufus/blob/master/res/loc/ChangeLog.txt",
+						"See https://github.com/SKYIOUS/SkyImager/blob/master/res/loc/ChangeLog.txt",
 						lcmd->unum[0], lcmd->unum[1], loc_base_major, loc_base_minor);
 				}
 				version_line_nr = loc_line_nr;
@@ -722,7 +722,7 @@ char* set_token_data_file(const char* token, const char* data, const char* filen
 			mode = 2;	// UTF-16 (LE)
 			break;
 		case 0xBBEF:	// Yeah, the UTF-8 BOM is really 0xEF,0xBB,0xBF, but
-			mode = 1;	// find me a non UTF-8 file that actually begins with "ï»"
+			mode = 1;	// find me a non UTF-8 file that actually begins with "Ã¯Â»"
 			break;
 		default:
 			mode = 0;	// ANSI
@@ -1011,7 +1011,7 @@ char* insert_section_data(const char* filename, const char* section, const char*
 		mode = 2;	// UTF-16 (LE)
 		break;
 	case 0xBBEF:	// Yeah, the UTF-8 BOM is really 0xEF,0xBB,0xBF, but
-		mode = 1;	// find me a non UTF-8 file that actually begins with "ï»"
+		mode = 1;	// find me a non UTF-8 file that actually begins with "Ã¯Â»"
 		break;
 	default:
 		mode = 0;	// ANSI
@@ -1154,7 +1154,7 @@ char* replace_in_token_data(const char* filename, const char* token, const char*
 		mode = 2;	// UTF-16 (LE)
 		break;
 	case 0xBBEF:	// Yeah, the UTF-8 BOM is really 0xEF,0xBB,0xBF, but
-		mode = 1;	// find me a non UTF-8 file that actually begins with "ï»"
+		mode = 1;	// find me a non UTF-8 file that actually begins with "Ã¯Â»"
 		break;
 	default:
 		mode = 0;	// ANSI

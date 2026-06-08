@@ -1,8 +1,8 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * DOS boot file extraction, from the FAT12 floppy image in diskcopy.dll
  * (MS WinME DOS) or from the embedded FreeDOS resource files
- * Copyright © 2011-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2011-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "missing.h"
 #include "resource.h"
 #include "msapi_utf8.h"

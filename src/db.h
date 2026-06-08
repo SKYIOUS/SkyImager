@@ -1,8 +1,8 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * DB of the known SHA256 hash values for Rufus downloadable content (GRUB, Syslinux, etc.)
  * as well other data for UEFI revoked content (SBAT, certs).
- * Copyright © 2016-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2016-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 #pragma once
 
 /*
- * NB: Table data was generated from the https://github.com/pbatard/rufus-web/tree/gh-pages/files/
- * directory using the https://github.com/pbatard/rufus-web/blob/gh-pages/files/gendb.sh script.
+ * NB: Table data was generated from the https://github.com/SKYIOUS/SkyImager-web/tree/gh-pages/files/
+ * directory using the https://github.com/SKYIOUS/SkyImager-web/blob/gh-pages/files/gendb.sh script.
  */
 static uint8_t sha256db[] = {
 	0x01, 0x21, 0x98, 0x20, 0xd9, 0x1c, 0x28, 0x7b, 0x35, 0x28, 0x06, 0xf1, 0xb6, 0xa8, 0x0d, 0x4a, 0x8a, 0xf4, 0x5c, 0xf5, 0x04, 0x83, 0xed, 0x6b, 0xe0, 0xc6, 0x0e, 0x7a, 0x66, 0x9c, 0x67, 0x87, // syslinux-6.04/pre2/ldlinux.bss
@@ -149,8 +149,8 @@ static const char db_sb_revoked_txt[] =
 
 /*
  * Extended SBATLevel.txt that merges Linux SBAT with Microsoft's SVN
- * See https://github.com/pbatard/rufus/issues/2244#issuecomment-2243661539
- * Use as fallback when https://rufus.ie/sbat_level.txt cannot be accessed.
+ * See https://github.com/SKYIOUS/SkyImager/issues/2244#issuecomment-2243661539
+ * Use as fallback when https://skyious.github.io/SkyImager/sbat_level.txt cannot be accessed.
  */
 static const char db_sbat_level_txt[] =
 	"sbat,1,2025051000\n"

@@ -1,6 +1,6 @@
-AC_INIT([rufus], [4.15], [https://github.com/pbatard/rufus/issues], [rufus], [https://rufus.ie])
+AC_INIT([skyimager], [4.15], [https://github.com/SKYIOUS/SkyImager/issues], [skyimager], [https://skyious.github.io/SkyImager])
 AM_INIT_AUTOMAKE([-Wno-portability foreign no-dist no-dependencies])
-AC_CONFIG_SRCDIR([src/rufus.c])
+AC_CONFIG_SRCDIR([src/skyimager.c])
 AC_CONFIG_MACRO_DIR([m4])
 AM_SILENT_RULES([yes])
 
@@ -65,7 +65,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],
 CFLAGS="${saved_CFLAGS}"
 
 # NB: The DECLSPEC_IMPORT redefinition below is a temporary(?) workaround for MinGW32 delay-loading
-# See https://github.com/pbatard/rufus/pull/2513 as well as https://sourceware.org/bugzilla/show_bug.cgi?id=14339
+# See https://github.com/SKYIOUS/SkyImager/pull/2513 as well as https://sourceware.org/bugzilla/show_bug.cgi?id=14339
 AM_CFLAGS="$AM_CFLAGS -DUNICODE -D_UNICODE -UNDEBUG -DCOBJMACROS -D__USE_MINGW_ANSI_STDIO=0 -UDECLSPEC_IMPORT -DDECLSPEC_IMPORT=__attribute__\(\(visibility\(\\\"hidden\\\"\)\)\) -std=gnu11 -Wshadow -Wall -Wformat-security -Wundef -Wunused -Wstrict-prototypes -Wno-restrict -Wno-array-bounds -Werror-implicit-function-declaration -Wbidi-chars=none $nopointersign_cflags"
 
 AC_SUBST([VISIBILITY_CFLAGS])

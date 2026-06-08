@@ -32,7 +32,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "xml.h"
-#include "rufus.h"
+#include "skyimager.h"
 #include "msapi_utf8.h"
 
 /* Memory leaks detection - define _CRTDBG_MAP_ALLOC as preprocessor macro */

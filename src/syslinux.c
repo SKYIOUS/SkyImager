@@ -26,7 +26,7 @@
 #include <malloc.h>
 #include <ctype.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "missing.h"
 #include "resource.h"
 #include "msapi_utf8.h"
@@ -180,7 +180,7 @@ BOOL InstallSyslinux(DWORD drive_index, char drive_letter, int file_system)
 				goto out;
 			}
 			uprintf("Using existing '%s\\%s' %s", app_data_dir, path,
-				IsBufferInDB(syslinux_ldlinux[i], (size_t)syslinux_ldlinux_len[i])?"✓":"✗");
+				IsBufferInDB(syslinux_ldlinux[i], (size_t)syslinux_ldlinux_len[i])?"âœ“":"âœ—");
 		}
 	} else {
 		for (i = 0; i < 2; i++) {
@@ -344,7 +344,7 @@ BOOL InstallSyslinux(DWORD drive_index, char drive_letter, int file_system)
 			fclose(fd);
 			if (CopyFileU(&path[3], path, TRUE)) {
 				uprintf("Created '%s' (from '%s\\%s\\%s-%s\\%s') %s", path, app_data_dir, FILES_DIR, syslinux,
-					embedded_sl_version_str[1], &path[3], IsFileInDB(&path[3])?"✓":"✗");
+					embedded_sl_version_str[1], &path[3], IsFileInDB(&path[3])?"âœ“":"âœ—");
 			} else {
 				uprintf("Failed to create '%s': %s", path, WindowsErrorString());
 			}

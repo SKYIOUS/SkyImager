@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Virtual Disk Handling functions
- * Copyright © 2013-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2013-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@
 #include <rpc.h>
 #include <time.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "ui.h"
 #include "vhd.h"
 #include "missing.h"
@@ -47,7 +47,7 @@
 
 extern char* save_image_type;
 extern BOOL ignore_boot_marker, has_ffu_support;
-extern RUFUS_DRIVE rufus_drive[MAX_DRIVES];
+extern SKYIMAGER_DRIVE DriveInfo[MAX_DRIVES];
 extern HANDLE format_thread;
 extern FILE* fd_md5sum;
 extern uint64_t total_blocks, extra_blocks, nb_blocks, last_nb_blocks;
@@ -246,7 +246,7 @@ static enum wimlib_progress_status WimProgressFunc(enum wimlib_progress_msg msg_
 		break;
 	case WIMLIB_PROGRESS_MSG_SPLIT_BEGIN_PART:
 		last_split_progress = info->split;
-		uprintf("● %S", info->split.part_name);
+		uprintf("â— %S", info->split.part_name);
 		break;
 	case WIMLIB_PROGRESS_MSG_SPLIT_END_PART:
 		if (fd_md5sum != NULL) {
@@ -549,7 +549,7 @@ out:
 	safe_free(img_save->ImagePath);
 	PostMessage(hMainDialog, UM_FORMAT_COMPLETED, (WPARAM)TRUE, 0);
 	if (r != 0 && !IS_ERROR(ErrorStatus))
-		ErrorStatus = RUFUS_ERROR(SCODE_CODE(r));
+		ErrorStatus = SKYIMAGER_ERROR(SCODE_CODE(r));
 	ExitThread(r);
 }
 
@@ -568,7 +568,7 @@ static DWORD WINAPI FfuSaveImageThread(void* param)
 	GetDriveLabel(SelectedDrive.DeviceNumber, letters, &label, TRUE);
 	static_sprintf(cmd, "%s\\dism.exe /Capture-Ffu /CaptureDrive:%s /ImageFile:\"%s\" "
 		"/Name:\"%s\" /Description:\"Created by %s (%s)\"", sysnative_dir,
-		img_save->DevicePath, img_save->ImagePath, label, APPLICATION_NAME, RUFUS_URL);
+		img_save->DevicePath, img_save->ImagePath, label, APPLICATION_NAME, SKYIMAGER_URL);
 	uprintf("Running command: '%s'", cmd);
 	// For detecting typical dism.exe commandline progress report of type:
 	// "\r[====                       8.0%                           ]"
@@ -576,7 +576,7 @@ static DWORD WINAPI FfuSaveImageThread(void* param)
 	if (r != 0 && !IS_ERROR(ErrorStatus)) {
 		SetLastError(r);
 		uprintf("Failed to capture FFU image: %s", WindowsErrorString());
-		ErrorStatus = RUFUS_ERROR(SCODE_CODE(r));
+		ErrorStatus = SKYIMAGER_ERROR(SCODE_CODE(r));
 	}
 	PostMessage(hMainDialog, UM_FORMAT_COMPLETED, (WPARAM)TRUE, 0);
 	if (!IS_ERROR(ErrorStatus))
@@ -603,7 +603,7 @@ BOOL SaveImage(void)
 	if_assert_fails((DriveIndex >= 0) && (format_thread == NULL))
 		return FALSE;
 
-	static_sprintf(filename, "%s", rufus_drive[DriveIndex].label);
+	static_sprintf(filename, "%s", DriveInfo[DriveIndex].label);
 	img_save.DeviceNum = (DWORD)ComboBox_GetItemData(hDeviceList, DriveIndex);
 	img_save.DevicePath = GetPhysicalName(img_save.DeviceNum);
 	img_ext.count = 2;
@@ -625,7 +625,7 @@ BOOL SaveImage(void)
 		i = image_type_vhdx;
 	img_save.ImagePath = FileDialog(TRUE, NULL, &img_ext, &i);
 	if (img_save.ImagePath == NULL) {
-		ErrorStatus = RUFUS_ERROR(ERROR_CANCELLED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_CANCELLED);
 		goto out;
 	}
 	// Start from the end of our extension array, since '.vhd' would match for '.vhdx' otherwise
@@ -650,7 +650,7 @@ BOOL SaveImage(void)
 		static_sprintf(path, "%s\\%s\\oscdimg_%s.exe", app_data_dir, FILES_DIR, APPLICATION_ARCH);
 		if (!PathFileExistsU(path)) {
 			if (Notification(MB_YESNO | MB_ICONWARNING, lmprintf(MSG_115), lmprintf(MSG_337, "oscdimg.exe")) != IDYES) {
-				ErrorStatus = RUFUS_ERROR(ERROR_CANCELLED);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_CANCELLED);
 				goto out;
 			}
 			IGNORE_RETVAL(_chdirU(app_data_dir));
@@ -678,7 +678,7 @@ BOOL SaveImage(void)
 				&& (GetDiskFreeSpaceExA(path, &free_space, NULL, NULL))
 				&& ((LONGLONG)free_space.QuadPart < (SelectedDrive.DiskSize + 512))) {
 				uprintf("The VHD size is too large for the target drive");
-				ErrorStatus = RUFUS_ERROR(ERROR_FILE_TOO_LARGE);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_FILE_TOO_LARGE);
 				goto out;
 			}
 		}

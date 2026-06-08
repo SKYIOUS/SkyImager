@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * extfs formatting
- * Copyright © 2019-2025 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2019-2025 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "file.h"
 #include "drive.h"
 #include "format.h"
@@ -177,7 +177,7 @@ const char* error_message(errcode_t error_code)
 		if ((error_code > EXT2_ET_BASE) && error_code < (EXT2_ET_BASE + 1000)) {
 			static_sprintf(error_string, "Unknown ext2fs error %ld (EXT2_ET_BASE + %ld)", error_code, error_code - EXT2_ET_BASE);
 		} else {
-			SetLastError((ErrorStatus == 0) ? RUFUS_ERROR(error_code & 0xFFFF) : ErrorStatus);
+			SetLastError((ErrorStatus == 0) ? SKYIMAGER_ERROR(error_code & 0xFFFF) : ErrorStatus);
 			static_sprintf(error_string, "%s", WindowsErrorString());
 		}
 		return error_string;
@@ -240,7 +240,7 @@ BOOL FormatExtFs(DWORD DriveIndex, uint64_t PartitionOffset, DWORD BlockSize, LP
 	errcode_t r;
 	uint8_t* buf = NULL;
 
-#if defined(RUFUS_TEST)
+#if defined(SKYIMAGER_TEST)
 	// Create a disk image file to test
 	uint8_t zb[1024];
 	HANDLE h;
@@ -265,7 +265,7 @@ BOOL FormatExtFs(DWORD DriveIndex, uint64_t PartitionOffset, DWORD BlockSize, LP
 	volume_name = GetExtPartitionName(DriveIndex, PartitionOffset);
 #endif
 	if ((volume_name == NULL) | (strlen(FSName) != 4) || (strncmp(FSName, "ext", 3) != 0)) {
-		ErrorStatus = RUFUS_ERROR(ERROR_INVALID_PARAMETER);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_INVALID_PARAMETER);
 		goto out;
 	}
 	if (strchr(volume_name, ' ') != NULL)

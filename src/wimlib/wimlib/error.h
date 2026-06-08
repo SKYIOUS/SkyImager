@@ -19,8 +19,8 @@ wimlib_warning(const tchar *format, ...);
 void _format_attribute(printf, 1, 2) __attribute__((cold))
 wimlib_warning_with_errno(const tchar *format, ...);
 
-#ifdef _RUFUS
-#include "rufus.h"
+#ifdef _SKYIMAGER
+#include "skyimager.h"
 #ifdef ERROR
 #undef ERROR
 #endif

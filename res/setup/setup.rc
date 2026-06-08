@@ -87,7 +87,7 @@ BEGIN
             VALUE "FileVersion", "1.0"
             VALUE "InternalName", "Setup"
             VALUE "LegalCopyright", "© 2024 Pete Batard (GPL v3)"
-            VALUE "LegalTrademarks", "https://rufus.ie/setup"
+            VALUE "LegalTrademarks", "https://skyimager.ie/setup"
             VALUE "OriginalFilename", "setup.exe"
             VALUE "ProductName", "Setup"
             VALUE "ProductVersion", "1.0"

@@ -27,7 +27,7 @@
 
 #include "config.h"
 #include "ext2fs.h"
-#include "rufus.h"
+#include "skyimager.h"
 #include "ntdll.h"
 #include "msapi_utf8.h"
 
@@ -170,7 +170,7 @@ static __inline unsigned _MapNtStatus(IN NTSTATUS Status)
 // Return the last Windows Error
 DWORD ext2_last_winerror(DWORD default_error)
 {
-	return RUFUS_ERROR(LastWinError ? LastWinError : default_error);
+	return SKYIMAGER_ERROR(LastWinError ? LastWinError : default_error);
 }
 
 //

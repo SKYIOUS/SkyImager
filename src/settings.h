@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Settings access, through either registry or INI file
- * Copyright © 2015-2024 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2015-2024 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  */
 #include <windows.h>
 #include <stdint.h>
-#include "rufus.h"
+#include "skyimager.h"
 #include "msapi_utf8.h"
 #include "registry.h"
 
@@ -36,7 +36,7 @@ extern char* ini_file;
 #define SETTING_DARK_MODE                   "DarkMode"
 #define SETTING_DISABLE_FAKE_DRIVES_CHECK   "DisableFakeDrivesCheck"
 #define SETTING_DISABLE_LGP                 "DisableLGP"
-#define SETTING_DISABLE_RUFUS_MBR           "DisableRufusMBR"
+#define SETTING_DISABLE_SKYIMAGER_MBR           "DisableSkyImagerMBR"
 #define SETTING_DISABLE_SECURE_BOOT_NOTICE  "DisableSecureBootNotice"
 #define SETTING_DISABLE_VHDS                "DisableVHDs"
 #define SETTING_ENABLE_EXTRA_HASHES         "EnableExtraHashes"

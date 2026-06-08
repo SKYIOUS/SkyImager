@@ -1,8 +1,8 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Standard User I/O Routines (logging, status, error, etc.)
- * Copyright © 2011-2026 Pete Batard <pete@akeo.ie>
- * Copyright © 2020 Mattiwatti <mattiwatti@gmail.com>
+ * Copyright Â© 2011-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2020 Mattiwatti <mattiwatti@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include <ctype.h>
 #include <math.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "ntdll.h"
 #include "winio.h"
 #include "missing.h"
@@ -51,7 +51,7 @@
 /*
  * Globals
  */
-const HANDLE hRufus = (HANDLE)0x0000005275667573ULL;	// "\0\0\0Rufus"
+const HANDLE hSkyImager = (HANDLE)0x0000005275667573ULL;	// "\0\0\0Rufus"
 HWND hStatus;
 size_t ubuffer_pos = 0;
 char ubuffer[UBUFFER_SIZE];	// Buffer for ubpushf() messages we don't log right away
@@ -207,7 +207,7 @@ uint32_t write_file(const char* path, const uint8_t* buf, const uint32_t size)
 }
 
 // Prints a bitstring of a number of any size, with or without leading zeroes.
-// See also the printbits() and printbitslz() helper macros in rufus.h
+// See also the printbits() and printbitslz() helper macros in skyimager.h
 char *_printbits(size_t const size, void const * const ptr, int leading_zeroes)
 {
 	// sizeof(uintmax_t) so that we have enough space to store whatever is thrown at us
@@ -643,8 +643,8 @@ BOOL WriteFileWithRetry(HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWr
 			uprintf("Wrote %d bytes but requested %d", *lpNumberOfBytesWritten, nNumberOfBytesToWrite);
 		} else {
 			uprintf("Write error %s", WindowsErrorString());
-			LastWriteError = RUFUS_ERROR(GetLastError());
-			if (LastWriteError == RUFUS_ERROR(ERROR_DISK_FULL) || HRESULT_CODE(ErrorStatus) == ERROR_CANCELLED)
+			LastWriteError = SKYIMAGER_ERROR(GetLastError());
+			if (LastWriteError == SKYIMAGER_ERROR(ERROR_DISK_FULL) || HRESULT_CODE(ErrorStatus) == ERROR_CANCELLED)
 				break;
 		}
 		if (nTry < nNumRetries) {
@@ -653,7 +653,7 @@ BOOL WriteFileWithRetry(HANDLE hFile, LPCVOID lpBuffer, DWORD nNumberOfBytesToWr
 		}
 	}
 	if (SCODE_CODE(GetLastError()) == ERROR_SUCCESS && HRESULT_CODE(ErrorStatus) != ERROR_CANCELLED)
-		SetLastError(RUFUS_ERROR(ERROR_WRITE_FAULT));
+		SetLastError(SKYIMAGER_ERROR(ERROR_WRITE_FAULT));
 	return FALSE;
 }
 
@@ -917,13 +917,13 @@ uint32_t ResolveDllAddress(dll_resolver_t* resolver)
 	if (DownloadToFileOrBufferEx(url, path, SYMBOL_SERVER_USER_AGENT, NULL, hMainDialog, FALSE) < 200 * KB)
 		goto out;
 
-	if (!pfSymInitialize(hRufus, NULL, FALSE)) {
+	if (!pfSymInitialize(hSkyImager, NULL, FALSE)) {
 		uprintf("Could not initialize DLL symbol handler");
 		goto out;
 	}
 
 	// NB: SymLoadModuleEx() does not load a PDB unless the file has an explicit '.pdb' extension
-	base_address = pfSymLoadModuleEx(hRufus, NULL, path, NULL, DEFAULT_BASE_ADDRESS, 0, NULL, 0);
+	base_address = pfSymLoadModuleEx(hSkyImager, NULL, path, NULL, DEFAULT_BASE_ADDRESS, 0, NULL, 0);
 	if_assert_fails(base_address == DEFAULT_BASE_ADDRESS)
 		goto out;
 	// On Windows 11 ARM64 the following call will return *TWO* different addresses for the same
@@ -934,7 +934,7 @@ uint32_t ResolveDllAddress(dll_resolver_t* resolver)
 	// and would give us a hint of the architecture behind each duplicate address, but of course,
 	// the SYMBOL_INFO passed to EnumSymProc contains no such data. So we currently don't have a
 	// way to tell which of the two addresses we get on ARM64 is for which architecture... :(
-	pfSymEnumSymbols(hRufus, base_address, "*!*", EnumSymProc, resolver);
+	pfSymEnumSymbols(hSkyImager, base_address, "*!*", EnumSymProc, resolver);
 	DeleteFileU(path);
 
 	// Store the addresses
@@ -951,8 +951,8 @@ uint32_t ResolveDllAddress(dll_resolver_t* resolver)
 out:
 	free(buf);
 	if (base_address != 0)
-		pfSymUnloadModule64(hRufus, base_address);
-	pfSymCleanup(hRufus);
+		pfSymUnloadModule64(hSkyImager, base_address);
+	pfSymCleanup(hSkyImager);
 	return r;
 }
 
@@ -982,7 +982,7 @@ BOOL ExtractZip(const char* src_zip, const char* dest_dir)
 	archive_size = _filesizeU(src_zip);
 	if (bled_init(256 * KB, NULL, NULL, NULL, update_progress, print_extracted_file, &ErrorStatus) != 0)
 		return FALSE;
-	uprintf("● Copying files from '%s'", src_zip);
+	uprintf("â— Copying files from '%s'", src_zip);
 	extracted_bytes = bled_uncompress_to_dir(src_zip, dest_dir, BLED_COMPRESSION_ZIP);
 	bled_exit();
 	return (extracted_bytes > 0);

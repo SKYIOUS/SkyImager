@@ -1,4 +1,4 @@
-o Version 4.14 (2026.04.30)
+﻿o Version 4.14 (2026.04.30)
     Windows User Experience improvements:
       - Add a "Quality of Life" option, to disable Teams, Outlook, Copilot and other Microsoft forced nuisances
       - Add a Silent installation option, that automatically, and WITHOUT PROMPT, installs Windows on the first detected disk
@@ -51,7 +51,7 @@ o Version 4.10 (2025.09.24)
     Fix a crash when trying to process Windows ISOs with very long paths
 
 o Version 4.9 (2025.06.15) [BUGFIX RELEASE]
-    Fix downloads from https://rufus.ie no longer working due to recent GitHub server changes
+    Fix downloads from https://skyious.github.io/SkyImager no longer working due to recent GitHub server changes
     Fix unofficial Windows ISOs, with single index WIMs, not presenting the WUE dialog
 
 o Version 4.8 (2025.06.11)
@@ -128,7 +128,7 @@ o Version 4.2 (2023.07.26)
     Add saving and restoring current drive to/from compressed FFU (Full Flash Update) image [EXPERIMENTAL]
     Fix a crash when trying to open Windows ISOs, with the MinGW compiled x86 32-bit version
     Fix an issue where ISOs that contain a boot image with an 'EFI' label are not detected as bootable
-    Increase the ISO → ESP limit for Debian 12 netinst images
+    Increase the ISO â†’ ESP limit for Debian 12 netinst images
     Ensure that the main partition size is aligned to the cluster size
 
 o Version 4.1 (2023.05.31)
@@ -156,7 +156,7 @@ o Version 3.22 (2023.03.25)
     Add an option to disable BitLocker device encryption in the Windows User Experience dialog
     Add a cheat mode (Ctrl-P) to preserve the log between sessions
     Fix potential media creation errors by forcing the unmount of stale WIM images
-    Fix potential access errors in ISO → ESP mode by forcing Large FAT32 formatting
+    Fix potential access errors in ISO â†’ ESP mode by forcing Large FAT32 formatting
     Fix user-specified label not being preserved on error/cancel
     Fix some large SSD devices being listed by default
     Fix processing of Rock Ridge CE fields
@@ -198,7 +198,7 @@ o Version 3.19 (2022.07.01)
       - Also add an option for setting internal drives offline for Windows To Go
       Note: These customization options are only proposed when using a Windows 11 image.
     Add support for distros using a nonstandard GRUB 2.0 prefix directory (openSUSE Live, GeckoLinux)
-    Add the ability to ignore USBs (See https://github.com/pbatard/rufus/blob/master/res/rufus.ini)
+    Add the ability to ignore USBs (See https://github.com/SKYIOUS/SkyImager/blob/master/res/skyimager.ini)
     Change drive listing to always list in increasing order of size
     Update exceptions needed by Red Hat and derivatives for the 9.x releases
     Update UEFI:NTFS drivers to latest
@@ -208,7 +208,7 @@ o Version 3.19 (2022.07.01)
 
 o Version 3.18 (2022.03.11)
     Fix DLL sideloading vulnerabilities
-    Fix ISO → ESP creation when running on Windows 11
+    Fix ISO â†’ ESP creation when running on Windows 11
     Fix an issue when detecting network connectivity when the DHCP service is disabled
     Update FreeDOS to version 1.3
     Add bypass of Windows 11 restrictions for in-place upgrades
@@ -386,7 +386,7 @@ o Version 3.3 (2018.09.17) [BUGFIX RELEASE]
 
 o Version 3.2 (2018.09.11)
     Add RSA-2048 signature validation on all the server downloads
-    Add "Fast zeroing" cheat mode (courtesy of René van der Zee)
+    Add "Fast zeroing" cheat mode (courtesy of RenÃ© van der Zee)
     Add support for XP/Server 2003 x64 ISOs (courtesy of Mattiwatti)
     Improve ISO extraction performance by preallocating files (courtesy of Mattiwatti)
     Improve bad blocks check algorithm (from suggestions by AL.Skywalker)
@@ -406,7 +406,7 @@ o Version 3.1 (2018.06.19)
 o Version 3.0 (2018.05.29)
     UI redesign to follow the flow of user operations (with thanks to Fahad Al-Riyami for the concept)
     Drop XP and Vista platform support
-    Switch all downloads to SSL and use https://rufus.ie as the new base URL
+    Switch all downloads to SSL and use https://skyious.github.io/SkyImager as the new base URL
     Add ARM64 support for UEFI:NTFS
     Fix delays when querying floppy drives during device enumeration
     Improve support of efi.img files on Linux ISOs
@@ -466,7 +466,7 @@ o Version 2.13 (2017.04.06)
     Update libcdio and GRUB 2.0 to latest
 
 o Version 2.12 (2017.01.27)
-    Add Hebrew translation, courtesy of NSBuilder and פלוני אלמוני
+    Add Hebrew translation, courtesy of NSBuilder and ×¤×œ×•× ×™ ××œ×ž×•× ×™
     Add a cheat mode (Alt-O) to create an ISO from the first optical media found
     Enable target system selection for Windows To Go
     Enable NTFS selection for Syslinux 6.x (EXPERIMENTAL)
@@ -486,7 +486,7 @@ o Version 2.11 (2016.09.08)
     Fix sanitizing of exFAT labels
 
 o Version 2.10 (2016.07.20)
-    Add SHA-256 validation for downloaded files. You will now see an ✓ or ✗ in the log for relevant content
+    Add SHA-256 validation for downloaded files. You will now see an âœ“ or âœ— in the log for relevant content
     Add support for O2Micro PCI-E card readers
     Add compressed NTFS support for UEFI:NTFS
     Improve automatic closure of the Windows default format prompt
@@ -536,7 +536,7 @@ o Version 2.5 (2015.10.26)
     Add SHA-256 checksum verification
     Add a cheat mode to disable exclusive USB drive locking (Alt-,)
     Add digital signature check on update downloads
-    Add Azerbaijani translation, courtesy of Elvin Məlikov
+    Add Azerbaijani translation, courtesy of Elvin MÉ™likov
     Add Persian translation, courtesy of Seyed Zia Azimi (ziaa)
     Fix an issue where the update settings dialog may not display properly
     Report Windows build number in the log (Windows 8 or later)
@@ -588,7 +588,7 @@ o Version 2.0 (2015.03.03)
     Major UI improvements (improved font, new info field, no separate progress dialog, etc.)
     Add support for Windows To Go (if Rufus is running on Windows 8 or later)
     Add support for Grub4DOS and GRUB 2 based images (e.g. FreeNAS)
-    Add portable application support, through a 'rufus.ini' file
+    Add portable application support, through a 'skyimager.ini' file
     Add native decompression support for DD images (.Z, .gz, .lzma, .bz2 and .xz)
     Add seamless UEFI boot of NTFS partitions, for Windows ISOs with large files (>4GB)
     Add support for Windows multipart 'install.swm'
@@ -629,7 +629,7 @@ o Version 1.4.9 (2014.06.08) [BUGFIX RELEASE]
 
 o Version 1.4.8 (2014.06.03)
     Add KolibriOS ISO support
-    Add Arabic translation, courtesy of عمر الصمد
+    Add Arabic translation, courtesy of Ø¹Ù…Ø± Ø§Ù„ØµÙ…Ø¯
     Add Croatian translation, courtesy of Dario Komar
     Add Danish translation, courtesy of Jens Hansen
     Add Latvian translation, courtesy of Aldis Tutins
@@ -687,7 +687,7 @@ o Version 1.4.2 (2014.01.18)
     Add NTFS UEFI support, for targets that can support it
     Add insertion detection for USB memory card readers
     Add retry when writing ISO files... again
-    Add Chinese (Simplified) translation, courtesy of 佚名
+    Add Chinese (Simplified) translation, courtesy of ä½šå
     Add Indonesian translation, courtesy of Abe Akatsuki
     Add Malay translation, courtesy of Muhammad Aman
     Add Portuguese (Portugal) translation, courtesy of Fernando Baptista
@@ -705,19 +705,19 @@ o Version 1.4.1 (2013.12.05) [BUGFIX RELEASE]
 
 o Version 1.4.0 (2013.12.02)
     Add localization support, with native integration for the following languages:
-    - Chinese (Traditional), courtesy of 佚
+    - Chinese (Traditional), courtesy of ä½š
     - Dutch, courtesy of Roberto Pino
-    - French, courtesy of myself ("Je vais me gêner !")
+    - French, courtesy of myself ("Je vais me gÃªner !")
     - German, courtesy of Thilo Langbein
     - Greek, courtesy of Konstantinos and Nikolaos Margaritis
     - Hungarian, courtesy of georg1136
     - Italian, courtesy of bovirus
-    - Korean, courtesy of 나두야간다
+    - Korean, courtesy of ë‚˜ë‘ì•¼ê°„ë‹¤
     - Lithuanian, courtesy of Gintaras Venslovas
     - Polish, courtesy of Piotr Halama
-    - Romanian, courtesy of Gîrlea Alexandru
-    - Russian, courtesy of Кирилл Иванов
-    - Spanish, courtesy of José Pineda
+    - Romanian, courtesy of GÃ®rlea Alexandru
+    - Russian, courtesy of ÐšÐ¸Ñ€Ð¸Ð»Ð» Ð˜Ð²Ð°Ð½Ð¾Ð²
+    - Spanish, courtesy of JosÃ© Pineda
     - Turkish, courtesy of Mehmetali Kuran
     - More to come, more wanted! See http://rufus.akeo.ie/translations
     Add "smart" detection of USB HDD vs USB Flash Drive

@@ -1,4 +1,4 @@
-Rufus: The Reliable USB Formatting Utility - Custom MBR
+SkyImager: A modern design iteration of the trusted SkyImager utility. Precision performance, re-imagined presentation. - Custom MBR
 
 # Description
 

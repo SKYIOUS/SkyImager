@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * PKI functions (code signing, etc.)
- * Copyright © 2015-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2015-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <wintrust.h>
 #include <assert.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "resource.h"
 #include "msapi_utf8.h"
 #include "localization.h"
@@ -761,7 +761,7 @@ LONG ValidateSignature(HWND hDlg, const char* path)
 	trust_file.pcwszFilePath = utf8_to_wchar(path);
 	if (trust_file.pcwszFilePath == NULL) {
 		uprintf("PKI: Unable to convert '%s' to UTF16", path);
-		return RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY);
+		return SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY);
 	}
 
 	trust_data.cbStruct = sizeof(trust_data);

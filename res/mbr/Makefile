@@ -1,5 +1,5 @@
 #
-# This file is part of the Rufus project.
+# This file is part of the SkyImager project.
 #
 # Copyright (c) 2012-2022 Pete Batard <pete@akeo.ie>
 #

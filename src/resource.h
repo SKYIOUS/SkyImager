@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by rufus.rc
+// Used by skyimager.rc
 //
 #define IDD_DIALOG                      101
 #define IDD_ABOUTBOX                    102
@@ -66,7 +66,7 @@
 #define IDR_GR_GRUB_GRLDR_MBR           450
 #define IDR_GR_GRUB2_CORE_IMG           451
 #define IDR_SBR_MSG                     452
-#define IDR_LC_RUFUS_LOC                500
+#define IDR_LC_SKYIMAGER_LOC                500
 #define IDR_XT_HOGGER                   501
 #define IDR_UEFI_NTFS                   502
 #define IDR_SETUP_X64                   503

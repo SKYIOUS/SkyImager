@@ -1,4 +1,4 @@
-# This sed script removes everything we don't need from rufus.loc, for embedding.
+﻿# This sed script removes everything we don't need from skyimager.loc, for embedding.
 
 # remove comments (but not so aggressively as to drop the end of MSG_298!)
 s/^#.*$//

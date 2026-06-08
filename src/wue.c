@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Windows User Experience
- * Copyright © 2022-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2022-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "vhd.h"
 #include "xml.h"
 #include "drive.h"
@@ -103,14 +103,14 @@ out:
 /// </summary>
 /// <param name="arch">The processor architecture of the Windows image being used.</param>
 /// <param name="flags">A bitmask representing the sections to enable.
-/// See "Windows User Experience flags and masks" from rufus.h</param>
+/// See "Windows User Experience flags and masks" from skyimager.h</param>
 /// <returns>The path of a newly created answer file on success or NULL on error.</returns>
 char* CreateUnattendXml(int arch, int flags)
 {
 	const static char* xml_arch_names[5] = { "x86", "amd64", "arm", "arm64" };
 	const static char* unallowed_account_names[] = {
 		// From https://learn.microsoft.com/en-us/archive/technet-wiki/13813.localized-names-for-administrator-account-in-windows
-		"Administrator", "Järjestelmänvalvoja", "Administrateur", "Rendszergazda", "Administrador", "Администратор", "Administratör",
+		"Administrator", "JÃ¤rjestelmÃ¤nvalvoja", "Administrateur", "Rendszergazda", "Administrador", "ÐÐ´Ð¼Ð¸Ð½Ð¸ÑÑ‚Ñ€Ð°Ñ‚Ð¾Ñ€", "AdministratÃ¶r",
 		"Guest", "DefaultAccount", "WDAGUtilityAccount", "HelpAssistant", "KRBTGT", "Local", "NONE", "SYSTEM"
 	};
 	static char path[MAX_PATH], tmp[MAX_PATH];
@@ -150,7 +150,7 @@ char* CreateUnattendXml(int arch, int flags)
 		fprintf(fd, "        </ProductKey>\n");
 		fprintf(fd, "      </UserData>\n");
 		if (flags & UNATTEND_SILENT_INSTALL) {
-			uprintf("• Silent Install");
+			uprintf("â€¢ Silent Install");
 			// Automatically partition the disk and set the installation target
 			fprintf(fd, "      <DiskConfiguration>\n");
 			fprintf(fd, "        <WillShowUI>OnError</WillShowUI>\n");
@@ -167,14 +167,14 @@ char* CreateUnattendXml(int arch, int flags)
 			// card readers, but we'd rather inconvenience a few people, to prevent potential data loss,
 			// than the opposite. Also note that you do *NOT* want to try to use drive letter mapping for
 			// the detection here, as if your drive isn't of type FIXED, the file copy steps bails out at
-			// 75%. See https://github.com/pbatard/rufus/issues/2960 for more details.
+			// 75%. See https://github.com/SKYIOUS/SkyImager/issues/2960 for more details.
 			fprintf(fd, "        <Disk wcm:action=\"modify\">\n");
 			fprintf(fd, "          <DiskID>1</DiskID> \n");
 			fprintf(fd, "          <ModifyPartitions>\n");
 			fprintf(fd, "            <ModifyPartition wcm:action=\"modify\">\n");
 			fprintf(fd, "              <Order>1</Order>\n");
 			fprintf(fd, "              <PartitionID>2</PartitionID>\n");
-			fprintf(fd, "              <Label>RUFUS_BOOT</Label>\n");
+			fprintf(fd, "              <Label>SKYIMAGER_BOOT</Label>\n");
 			fprintf(fd, "            </ModifyPartition>\n");
 			fprintf(fd, "          </ModifyPartitions>\n");
 			fprintf(fd, "        </Disk>\n");
@@ -238,7 +238,7 @@ char* CreateUnattendXml(int arch, int flags)
 			// So, in format.c, we'll try to insert the registry keys directly and drop this section. However,
 			// because Microsoft prevents Store apps from editing an offline registry, we do need this fallback.
 			// NB: We could probably avoid this by running powershell with -WindowStyle "Hidden" but hey...
-			uprintf("• Bypass SB/TPM/RAM");
+			uprintf("â€¢ Bypass SB/TPM/RAM");
 			order = 1;
 			removable_section[0] = (uint32_t)ftell(fd);
 			fprintf(fd, "      <RunSynchronous>\n");
@@ -272,10 +272,10 @@ char* CreateUnattendXml(int arch, int flags)
 		// NB: This is INCOMPATIBLE with S-Mode below
 		if (flags & UNATTEND_NO_ONLINE_ACCOUNT) {
 			StrArrayAdd(&commands, "reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\OOBE\" /v BypassNRO /t REG_DWORD /d 1 /f", TRUE);
-			uprintf("• Bypass online account requirement");
+			uprintf("â€¢ Bypass online account requirement");
 		}
 		if (flags & UNATTEND_QOL_ENHANCEMENTS) {
-			uprintf("• QoL: Disable OneDrive and Outlook by default");
+			uprintf("â€¢ QoL: Disable OneDrive and Outlook by default");
 			// Remove OneDrive
 			StrArrayAdd(&commands, "reg add \"HKLM\\Software\\Policies\\Microsoft\\Windows\\OneDrive\" /v DisableFileSyncNGSC /t REG_DWORD /d 1 /f", TRUE);
 			StrArrayAdd(&commands, "PowerShell -NonInteractive -WindowStyle Hidden -Command "
@@ -318,7 +318,7 @@ char* CreateUnattendXml(int arch, int flags)
 				"publicKeyToken=\"31bf3856ad364e35\" versionScope=\"nonSxS\">\n", xml_arch_names[arch]);
 			// We should always have UNATTEND_NO_DATA_COLLECTION if UNATTEND_SILENT_INSTALL is set but whatever...
 			if (flags & (UNATTEND_NO_DATA_COLLECTION | UNATTEND_SILENT_INSTALL)) {
-				uprintf("• Disable data collection");
+				uprintf("â€¢ Disable data collection");
 				fprintf(fd, "      <OOBE>\n");
 				fprintf(fd, "        <HideEULAPage>true</HideEULAPage>\n");
 				// https://docs.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-shell-setup-oobe-protectyourpc
@@ -350,7 +350,7 @@ char* CreateUnattendXml(int arch, int flags)
 					// Per https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/unattend/microsoft-windows-shell-setup-useraccounts-localaccounts-localaccount-name
 					// Add '.' to the list because some folks also reported an issue with local accounts that have dots...
 					filter_chars(unattend_username, "/\\[]:|<>+=;,?*%@.", '_');
-					uprintf("• Use '%s' for local account name", unattend_username);
+					uprintf("â€¢ Use '%s' for local account name", unattend_username);
 					if (strcmp(org_username, unattend_username) != 0)
 						uprintf("WARNING: Local account name contained unallowed characters and has been sanitized");
 					free(org_username);
@@ -392,13 +392,13 @@ char* CreateUnattendXml(int arch, int flags)
 			// produce the 0xc0000428 signature validation error on (re)boot if the system hasn't gone
 			// through a full Windows Update cycle.
 			if (flags & UNATTEND_APPLY_SKUSIPOLICY) {
-				uprintf("• Apply SkuSiPolicy.p7b");
+				uprintf("â€¢ Apply SkuSiPolicy.p7b");
 				StrArrayAdd(&commands, "cmd /c mountvol S: /S &amp;&amp; "
 					"copy %WINDIR%\\system32\\SecureBootUpdates\\SkuSiPolicy.p7b S:\\EFI\\Microsoft\\Boot &amp;&amp; "
 					"mountvol S: /D", TRUE);
 			}
 			if (flags & UNATTEND_QOL_ENHANCEMENTS) {
-				uprintf("• QoL: Disable Fast Startup, Copilot, Recommendations, News and Teams by default");
+				uprintf("â€¢ QoL: Disable Fast Startup, Copilot, Recommendations, News and Teams by default");
 				// Disable Fast Startup 
 				StrArrayAdd(&commands, "reg add \"HKLM\\System\\CurrentControlSet\\Control\\Session Manager\\Power\" "
 					"/v HiberbootEnabled /t REG_DWORD /d 0 /f", TRUE);
@@ -433,7 +433,7 @@ char* CreateUnattendXml(int arch, int flags)
 				// Skip Edge's first run dialog
 				StrArrayAdd(&commands, "reg add \"HKLM\\Software\\Policies\\Microsoft\\Edge\" "
 					"/v HideFirstRunExperience /t REG_DWORD /d 1 /f", TRUE);
-				uprintf("• QoL: More pins for the Start Menu and enable useful shortcuts");
+				uprintf("â€¢ QoL: More pins for the Start Menu and enable useful shortcuts");
 				// More pins by default on the Start Menu
 				// https://learn.microsoft.com/en-us/windows/apps/develop/settings/settings-windows-11
 				StrArrayAdd(&commands, "reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced\" "
@@ -462,7 +462,7 @@ char* CreateUnattendXml(int arch, int flags)
 			StrArrayClear(&commands);
 		}
 		if (flags & UNATTEND_OOBE_INTERNATIONAL_MASK) {
-			uprintf("• Use the same regional options as this user's");
+			uprintf("â€¢ Use the same regional options as this user's");
 			fprintf(fd, "    <component name=\"Microsoft-Windows-International-Core\" processorArchitecture=\"%s\" language=\"neutral\" "
 				"xmlns:wcm=\"http://schemas.microsoft.com/WMIConfig/2002/State\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 				"publicKeyToken=\"31bf3856ad364e35\" versionScope=\"nonSxS\">\n", xml_arch_names[arch]);
@@ -480,7 +480,7 @@ char* CreateUnattendXml(int arch, int flags)
 			fprintf(fd, "    </component>\n");
 		}
 		if (flags & UNATTEND_DISABLE_BITLOCKER) {
-			uprintf("• Disable BitLocker");
+			uprintf("â€¢ Disable BitLocker");
 			fprintf(fd, "    <component name=\"Microsoft-Windows-SecureStartup-FilterDriver\" processorArchitecture=\"%s\" language=\"neutral\" "
 				"xmlns:wcm=\"http://schemas.microsoft.com/WMIConfig/2002/State\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 				"publicKeyToken=\"31bf3856ad364e35\" versionScope=\"nonSxS\">\n", xml_arch_names[arch]);
@@ -498,7 +498,7 @@ char* CreateUnattendXml(int arch, int flags)
 	if (flags & UNATTEND_OFFLINE_SERVICING_MASK) {
 		fprintf(fd, "  <settings pass=\"offlineServicing\">\n");
 		if (flags & UNATTEND_OFFLINE_INTERNAL_DRIVES) {
-			uprintf("• Set internal drives offline");
+			uprintf("â€¢ Set internal drives offline");
 			fprintf(fd, "    <component name=\"Microsoft-Windows-PartitionManager\" processorArchitecture=\"%s\" language=\"neutral\" "
 				"xmlns:wcm=\"http://schemas.microsoft.com/WMIConfig/2002/State\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 				"publicKeyToken=\"31bf3856ad364e35\" versionScope=\"nonSxS\">\n", xml_arch_names[arch]);
@@ -506,7 +506,7 @@ char* CreateUnattendXml(int arch, int flags)
 			fprintf(fd, "    </component>\n");
 		}
 		if (flags & UNATTEND_FORCE_S_MODE) {
-			uprintf("• Enforce S Mode");
+			uprintf("â€¢ Enforce S Mode");
 			fprintf(fd, "    <component name=\"Microsoft-Windows-CodeIntegrity\" processorArchitecture=\"%s\" language=\"neutral\" "
 				"xmlns:wcm=\"http://schemas.microsoft.com/WMIConfig/2002/State\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 				"publicKeyToken=\"31bf3856ad364e35\" versionScope=\"nonSxS\">\n", xml_arch_names[arch]);
@@ -517,7 +517,7 @@ char* CreateUnattendXml(int arch, int flags)
 	}
 
 	if (flags & UNATTEND_USE_MS2023_BOOTLOADERS)
-		uprintf("• Use 'Windows CA 2023' signed bootloaders");
+		uprintf("â€¢ Use 'Windows CA 2023' signed bootloaders");
 
 	StrArrayDestroy(&commands);
 	fprintf(fd, "</unattend>\n");
@@ -990,7 +990,7 @@ BOOL SetupWinToGo(DWORD DriveIndex, const char* drive_name, BOOL use_esp)
 	uprintf("Windows To Go mode selected");
 	// Additional sanity checks
 	if ((use_esp) && (SelectedDrive.MediaType != FixedMedia) && (WindowsVersion.BuildNumber < 15000)) {
-		ErrorStatus = RUFUS_ERROR(ERROR_NOT_SUPPORTED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_SUPPORTED);
 		return FALSE;
 	}
 
@@ -1006,7 +1006,7 @@ BOOL SetupWinToGo(DWORD DriveIndex, const char* drive_name, BOOL use_esp)
 	if (!WimApplyImage(wim_path, wintogo_index, drive_name)) {
 		uprintf("Failed to apply Windows To Go image");
 		if (!IS_ERROR(ErrorStatus))
-			ErrorStatus = RUFUS_ERROR(APPERR(ERROR_ISO_EXTRACT));
+			ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_ISO_EXTRACT));
 		return FALSE;
 	}
 
@@ -1035,7 +1035,7 @@ BOOL SetupWinToGo(DWORD DriveIndex, const char* drive_name, BOOL use_esp)
 		// Need to have the ESP mounted to invoke bcdboot
 		ms_efi = AltMountVolume(DriveIndex, SelectedDrive.Partition[partition_index[PI_ESP]].Offset, FALSE);
 		if (ms_efi == NULL) {
-			ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_ASSIGN_LETTER));
+			ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_ASSIGN_LETTER));
 			return FALSE;
 		}
 	}
@@ -1047,7 +1047,7 @@ BOOL SetupWinToGo(DWORD DriveIndex, const char* drive_name, BOOL use_esp)
 	// will get converted to 'C:\Windows\SysWOW64' behind the scenes, and there is no bcdboot.exe there.
 	// Finally, due to the whole _EX mess, we have to detect if the system bcdboot supports the /offline
 	// option, and if it does, whether the target has `Windows\Boot\EFI_EX\` so that we don't let bcdboot
-	// attempt to use the _EX files and fail. See https://github.com/pbatard/rufus/issues/2940.
+	// attempt to use the _EX files and fail. See https://github.com/SKYIOUS/SkyImager/issues/2940.
 	uprintf("Enabling boot using command:");
 	// Create the EFI\Microsoft\Boot\ directory on the ESP, since bcdboot is apparently unable to do that!
 	static_sprintf(path, "%s\\EFI\\Microsoft\\Boot", (use_esp) ? ms_efi : drive_name);
@@ -1068,7 +1068,7 @@ BOOL SetupWinToGo(DWORD DriveIndex, const char* drive_name, BOOL use_esp)
 	if (RunCommand(cmd, sysnative_dir, usb_debug) != 0) {
 		// Try to continue... but report a failure
 		uprintf("Failed to enable boot");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_ISO_EXTRACT));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_ISO_EXTRACT));
 	}
 
 	UpdateProgressWithInfo(OP_FILE_COPY, MSG_267, 99, 100);
@@ -1114,7 +1114,7 @@ BOOL ApplyWindowsCustomization(char drive_letter, int flags)
 {
 	BOOL r = FALSE, is_hive_mounted = FALSE, update_boot_wim = FALSE;
 	int i, wim_index = 2, wuc_index = 0, num_replaced = 0;
-	const char* offline_hive_name = "RUFUS_OFFLINE_HIVE";
+	const char* offline_hive_name = "SKYIMAGER_OFFLINE_HIVE";
 	const char* reg_path = "Windows\\System32\\config\\SYSTEM";
 	const char* efi_ex_path = "Windows\\Boot\\EFI_EX";
 	const char* fonts_ex_path = "Windows\\Boot\\Fonts_EX";
@@ -1164,7 +1164,7 @@ BOOL ApplyWindowsCustomization(char drive_letter, int flags)
 				uprintf("Could not rename '%s': %s", appraiserres_dll_src, WindowsErrorString());
 			} else {
 				if (GetLastError() == ERROR_SUCCESS)
-					uprintf("Renamed '%s' → '%s'", appraiserres_dll_src, appraiserres_dll_dst);
+					uprintf("Renamed '%s' â†’ '%s'", appraiserres_dll_src, appraiserres_dll_dst);
 				CloseHandle(CreateFileU(appraiserres_dll_src, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ,
 					NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
 				uprintf("Created '%s' placeholder", appraiserres_dll_src);
@@ -1187,7 +1187,7 @@ BOOL ApplyWindowsCustomization(char drive_letter, int flags)
 					} else if (!MoveFileExU(setup_exe, setup_dll, 0)) {
 						uprintf("Could not rename '%s': %s", setup_exe, WindowsErrorString());
 					} else {
-						uprintf("Renamed '%s' → '%s'", setup_exe, setup_dll);
+						uprintf("Renamed '%s' â†’ '%s'", setup_exe, setup_dll);
 						buf = GetResource(hMainInstance, MAKEINTRESOURCEA(setup_arch == IMAGE_FILE_MACHINE_AMD64 ? IDR_SETUP_X64 : IDR_SETUP_ARM64),
 							_RT_RCDATA, "setup.exe", &dwSize, FALSE);
 						if (buf == NULL) {
@@ -1324,7 +1324,7 @@ BOOL ApplyWindowsCustomization(char drive_letter, int flags)
 		} else {
 			// If there is no windowsPE section in our unattend, then copying it as Autounattend.xml on
 			// the root of boot.wim will not work as Windows Setup does *NOT* carry Autounattend.xml into
-			// %WINDIR%\Panther\unattend.xml then (See: https://github.com/pbatard/rufus/issues/1981).
+			// %WINDIR%\Panther\unattend.xml then (See: https://github.com/SKYIOUS/SkyImager/issues/1981).
 			// So instead, copy it to \sources\$OEM$\$$\Panther\unattend.xml on the media, as the content
 			// of \sources\$OEM$\$$\* will get copied into %WINDIR%\ during the file copy phase.
 			static_sprintf(path, "%c:\\sources\\$OEM$\\$$\\Panther", drive_letter);

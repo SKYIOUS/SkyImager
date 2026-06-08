@@ -1,8 +1,8 @@
 /*
-* Rufus: The Reliable USB Formatting Utility
+* SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
 * Windows I/O redefinitions, that would be totally unnecessary had
 * Microsoft done a proper job with their asynchronous APIs.
-* Copyright © 2021-2024 Pete Batard <pete@akeo.ie>
+* Copyright Â© 2021-2024 Pete Batard <pete@akeo.ie>
 *
 * This program is free software: you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by

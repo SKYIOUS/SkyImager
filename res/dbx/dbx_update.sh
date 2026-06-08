@@ -14,7 +14,7 @@ get_commit_date() {
   echo ${epoch:-0}
 }
 
-# Should be in the same order as the ArchType enum in Rufus with the first entry (ARCH_UNKNOWN = 0) skipped
+# Should be in the same order as the ArchType enum in SkyImager with the first entry (ARCH_UNKNOWN = 0) skipped
 # Note that are GUESSING the RISC-V 64 and LoongArch 64 URLS since there are no DBX revocations for those archs yet.
 # Also use api.github.com (which is rate limited) so we don't get the stupid 404 GitHub page on error, which is 10
 # times larger than our largest DBX update binary...

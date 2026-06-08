@@ -173,7 +173,7 @@ do_xml_path_walk(struct xml_node *element, const tchar *path, bool create,
 		 struct xml_node **result_ret)
 {
 	size_t n = tstrlen(path) + 1;
-#ifdef _RUFUS
+#ifdef _SKYIMAGER
 	wimlib_assert(n < MAX_PATH);
 	tchar buf[MAX_PATH];
 #else

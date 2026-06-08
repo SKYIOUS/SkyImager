@@ -63,6 +63,6 @@ embedded.loc
 /res/loc/pollock/.vs
 /res/loc/pollock/bin
 /res/loc/pollock/obj
-/rufus_files
+/skyimager_files
 stamp-h1
-/.vs/rufus
+/.vs/skyimager

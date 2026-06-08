@@ -1,4 +1,4 @@
-@rem This script creates the Rufus appxupload for upload to the Windows Store.
+@rem This script creates the SkyImager appxupload for upload to the Windows Store.
 @rem It attemps to follow as closely as possible what Visual Studio does.
 @echo off
 setlocal EnableExtensions DisableDelayedExpansion
@@ -63,8 +63,8 @@ set tmp=
 cd /d "%~dp0"
 
 for %%a in (%ARCHS%) do (
-  if not exist rufus_%%a.exe (
-    echo rufus_%%a.exe is missing from the current directory
+  if not exist skyimager_%%a.exe (
+    echo skyimager_%%a.exe is missing from the current directory
     goto out
   )
 )
@@ -76,18 +76,18 @@ if not exist ..\get_pe_info.exe (
 )
 
 rem Make sure we're not trying to create a package from an ALPHA or BETA version!
-..\get_pe_info.exe -i rufus_x64.exe | findstr /C:"ALPHA" 1>nul && (
+..\get_pe_info.exe -i skyimager_x64.exe | findstr /C:"ALPHA" 1>nul && (
   echo Alpha version detected - ABORTED
   goto out
 )
-..\get_pe_info.exe -i rufus_x64.exe | findstr /C:"BETA" 1>nul && (
+..\get_pe_info.exe -i skyimager_x64.exe | findstr /C:"BETA" 1>nul && (
   echo Beta version detected - ABORTED
   goto out
 )
 
 rem Populate the version from the executable
 if "%VERSION_OVERRIDE%"=="" (
-  ..\get_pe_info.exe -v rufus_x64.exe > version.txt
+  ..\get_pe_info.exe -v skyimager_x64.exe > version.txt
   set /p VERSION=<version.txt
   del version.txt
 ) else (
@@ -115,9 +115,9 @@ setlocal DisableDelayedExpansion
 
 for %%a in (%ARCHS%) do (
   echo.
-  echo Creating Rufus_%VERSION%_%%a.appx...
+  echo Creating SkyImager_%VERSION%_%%a.appx...
   cd /d "%~dp0"
-  echo "Rufus_%VERSION%_%%a.appx" "Rufus_%VERSION%_%%a.appx">> bundle.map
+  echo "SkyImager_%VERSION%_%%a.appx" "SkyImager_%VERSION%_%%a.appx">> bundle.map
   mkdir %%a >NUL 2>&1
   cd %%a
   mkdir Images >NUL 2>&1
@@ -127,27 +127,27 @@ for %%a in (%ARCHS%) do (
   for %%i in (%SCALED_IMAGES%) do (
     copy "..\Images\%%i.scale-%DEFAULT_SCALE%.png" Images\ >NUL 2>&1
   )
-  mkdir rufus
-  copy "..\rufus_%%a.exe" "rufus\rufus.exe" >NUL 2>&1
-  copy /y NUL "rufus\rufus.app" >NUL 2>&1
+  mkdir skyimager
+  copy "..\skyimager_%%a.exe" "skyimager\skyimager.exe" >NUL 2>&1
+  copy /y NUL "skyimager\skyimager.app" >NUL 2>&1
   rem When invoking MakePri, it is very important that you don't have files such as AppxManifest.xml or priconfig.xml
   rem in the directory referenced by /pr or you may get ERROR_MRM_DUPLICATE_ENTRY when validating the submission as,
   rem for instance, the 'AppxManifest.xml' from the 100% scale bundle will conflict the one from the x64 bundle.
   "%WDK_PATH%\MakePri" createconfig /o /pv 10.0.0 /cf ..\priconfig.xml /dq %STUPID_MAKEPRI_LANGUAGES%_scale-%DEFAULT_SCALE%_theme-light
   "%WDK_PATH%\MakePri" new /o /pr . /cf ..\priconfig.xml
   del /q ..\priconfig.xml
-  copy ..\RufusAppxManifest.xml %MANIFEST% >NUL 2>&1
+  copy ..\SkyImagerAppxManifest.xml %MANIFEST% >NUL 2>&1
   call:ReplaceTokenInFile %MANIFEST% @ARCH@ %%a
   call:ReplaceTokenInFile %MANIFEST% @VERSION@ %VERSION%
-  "%WDK_PATH%\MakeAppx" pack /o /d . /p ..\Rufus_%VERSION%_%%a.appx
+  "%WDK_PATH%\MakeAppx" pack /o /d . /p ..\SkyImager_%VERSION%_%%a.appx
   if ERRORLEVEL 1 goto out
 )
 
 for %%a in (%OTHER_SCALES%) do (
   echo.
-  echo Creating Rufus_%VERSION%_scale-%%a.appx...
+  echo Creating SkyImager_%VERSION%_scale-%%a.appx...
   cd /d "%~dp0"
-  echo "Rufus_%VERSION%_scale-%%a.appx" "Rufus_%VERSION%_scale-%%a.appx">> bundle.map
+  echo "SkyImager_%VERSION%_scale-%%a.appx" "SkyImager_%VERSION%_scale-%%a.appx">> bundle.map
   mkdir %%a >NUL 2>&1
   cd %%a
   mkdir Images >NUL 2>&1
@@ -160,16 +160,16 @@ for %%a in (%OTHER_SCALES%) do (
   copy ..\ScaleAppxManifest.xml %MANIFEST% >NUL 2>&1
   call:ReplaceTokenInFile %MANIFEST% @SCALE@ %%a
   call:ReplaceTokenInFile %MANIFEST% @VERSION@ %VERSION%
-  "%WDK_PATH%\MakeAppx" pack /o /d . /p ..\Rufus_%VERSION%_scale-%%a.appx
+  "%WDK_PATH%\MakeAppx" pack /o /d . /p ..\SkyImager_%VERSION%_scale-%%a.appx
 )
 
 setlocal EnableDelayedExpansion
 set ALL_ARCHS=
 for %%a in (%ARCHS%) do set ALL_ARCHS=!ALL_ARCHS!_%%a
 cd /d "%~dp0"
-"%WDK_PATH%\MakeAppx" bundle /f bundle.map /bv %VERSION% /p Rufus_%VERSION%%ALL_ARCHS%.appxbundle
+"%WDK_PATH%\MakeAppx" bundle /f bundle.map /bv %VERSION% /p SkyImager_%VERSION%%ALL_ARCHS%.appxbundle
 rem Visual Studio zips the appxbundle into an appxupload for store upload, so we do the same...
-"%ZIP_PATH%\7z" a -tzip Rufus_%VERSION%%ALL_ARCHS%_bundle.appxupload Rufus_%VERSION%%ALL_ARCHS%.appxbundle
+"%ZIP_PATH%\7z" a -tzip SkyImager_%VERSION%%ALL_ARCHS%_bundle.appxupload SkyImager_%VERSION%%ALL_ARCHS%.appxbundle
 endlocal
 
 :out

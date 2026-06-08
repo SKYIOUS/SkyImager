@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -122,7 +122,7 @@
     <ClInclude Include="..\src\ms-sys\inc\br_fat16ros_0x0.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ms-sys\inc\mbr_rufus.h">
+    <ClInclude Include="..\src\ms-sys\inc\mbr_skyimager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ms-sys\inc\br_fat32kos_0x52.h">
@@ -155,7 +155,7 @@
     <ClInclude Include="..\src\ms-sys\inc\mbr_gpt_syslinux.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ms-sys\inc\mbr_msg_rufus.h">
+    <ClInclude Include="..\src\ms-sys\inc\mbr_msg_skyimager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ms-sys\inc\mbr_isolinux.h">

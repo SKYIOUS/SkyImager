@@ -1,4 +1,4 @@
-#!/bin/env python3
+﻿#!/bin/env python3
 
 # PE Load Configuration section enabler for MinGW/gcc executables.
 # The PE executable should have a IMAGE_LOAD_CONFIG_DIRECTORY## section
@@ -9,7 +9,7 @@ import sys
 import pefile
 
 IMAGE_DIRECTORY_ENTRY_LOAD_CONFIG = 10
-IMAGE_DIRECTORY_ENTRY_MARKER      = b"_RUFUS_LOAD_CFG"
+IMAGE_DIRECTORY_ENTRY_MARKER      = b"_SKYIMAGER_LOAD_CFG"
 
 if len(sys.argv) < 2:
     raise RuntimeError("No executable path supplied")

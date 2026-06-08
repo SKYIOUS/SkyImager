@@ -1,13 +1,13 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Message-Digest algorithms (md5sum, sha1sum, sha256sum, sha512sum)
- * Copyright © 1998-2001 Free Software Foundation, Inc.
- * Copyright © 2004-2019 Tom St Denis
- * Copyright © 2004 g10 Code GmbH
- * Copyright © 2002-2015 Wei Dai & Igor Pavlov
- * Copyright © 2015-2025 Pete Batard <pete@akeo.ie>
- * Copyright © 2022 Jeffrey Walton <noloader@gmail.com>
- * Copyright © 2016 Alexander Graf
+ * Copyright Â© 1998-2001 Free Software Foundation, Inc.
+ * Copyright Â© 2004-2019 Tom St Denis
+ * Copyright Â© 2004 g10 Code GmbH
+ * Copyright Â© 2002-2015 Wei Dai & Igor Pavlov
+ * Copyright Â© 2015-2025 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2022 Jeffrey Walton <noloader@gmail.com>
+ * Copyright Â© 2016 Alexander Graf
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@
 
 #include "db.h"
 #include "efi.h"
-#include "rufus.h"
+#include "skyimager.h"
 #include "winio.h"
 #include "missing.h"
 #include "darkmode.h"
@@ -663,10 +663,10 @@ static __inline void sha256_transform_cc(HASH_CONTEXT *ctx, const uint8_t *data)
 	h = (uint32_t)ctx->state[7];
 
 // Nesting the ROR allows for single register compiler optimizations
-#define S0(x) (ROR32(ROR32(ROR32(x,9)^(x),11)^(x),2))	// Σ0 (Sigma 0)
-#define S1(x) (ROR32(ROR32(ROR32(x,14)^(x),5)^(x),6))	// Σ1 (Sigma 1)
-#define s0(x) (ROR32(ROR32(x,11)^(x),7)^((x)>>3))		// σ0 (sigma 0)
-#define s1(x) (ROR32(ROR32(x,2)^(x),17)^((x)>>10))		// σ1 (sigma 1)
+#define S0(x) (ROR32(ROR32(ROR32(x,9)^(x),11)^(x),2))	// Î£0 (Sigma 0)
+#define S1(x) (ROR32(ROR32(ROR32(x,14)^(x),5)^(x),6))	// Î£1 (Sigma 1)
+#define s0(x) (ROR32(ROR32(x,11)^(x),7)^((x)>>3))		// Ïƒ0 (sigma 0)
+#define s1(x) (ROR32(ROR32(x,2)^(x),17)^((x)>>10))		// Ïƒ1 (sigma 1)
 #define BLK0(i) (x[i])
 #define BLK2(i) (x[i] += s1(x[((i)-2)&15]) + x[((i)-7)&15] + s0(x[((i)-15)&15]))
 #define R(a, b, c, d, e, f, g, h, i) \
@@ -979,10 +979,10 @@ static __inline void sha512_transform(HASH_CONTEXT* ctx, const uint8_t* data)
 	h = ctx->state[7];
 
 // Nesting the ROR allows for single register compiler optimizations
-#define S0(x) (ROR64(ROR64(ROR64(x,5)^(x),6)^(x),28))	// Σ0 (Sigma 0)
-#define S1(x) (ROR64(ROR64(ROR64(x,23)^(x),4)^(x),14))	// Σ1 (Sigma 1)
-#define s0(x) (ROR64(ROR64(x,7)^(x),1)^((x)>>7))		// σ0 (sigma 0)
-#define s1(x) (ROR64(ROR64(x,42)^(x),19)^((x)>>6))		// σ1 (sigma 1)
+#define S0(x) (ROR64(ROR64(ROR64(x,5)^(x),6)^(x),28))	// Î£0 (Sigma 0)
+#define S1(x) (ROR64(ROR64(ROR64(x,23)^(x),4)^(x),14))	// Î£1 (Sigma 1)
+#define s0(x) (ROR64(ROR64(x,7)^(x),1)^((x)>>7))		// Ïƒ0 (sigma 0)
+#define s1(x) (ROR64(ROR64(x,42)^(x),19)^((x)>>6))		// Ïƒ1 (sigma 1)
 #define R(a, b, c, d, e, f, g, h, i) \
 	h += S1(e) + Ch(e, f, g) + K512[i] + W[i]; \
 	d += h; \
@@ -1541,7 +1541,7 @@ BOOL HashFile(const unsigned type, const char* path, uint8_t* hash)
 	h = CreateFileU(path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	if (h == INVALID_HANDLE_VALUE) {
 		uprintf("Could not open file: %s", WindowsErrorString());
-		ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 		goto out;
 	}
 
@@ -1549,7 +1549,7 @@ BOOL HashFile(const unsigned type, const char* path, uint8_t* hash)
 	for (rb = 0; ; rb += rs) {
 		CHECK_FOR_USER_CANCEL;
 		if (!ReadFile(h, buf, sizeof(buf), &rs, NULL)) {
-			ErrorStatus = RUFUS_ERROR(ERROR_READ_FAULT);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_READ_FAULT);
 			uprintf("  Read error: %s", WindowsErrorString());
 			goto out;
 		}
@@ -2047,7 +2047,7 @@ DWORD WINAPI HashThread(void* param)
 	fd = CreateFileAsync(image_path, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN);
 	if (fd == NULL) {
 		uprintf("Could not open file: %s", WindowsErrorString());
-		ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 		goto out;
 	}
 
@@ -2068,7 +2068,7 @@ DWORD WINAPI HashThread(void* param)
 		if ((!WaitFileAsync(fd, DRIVE_ACCESS_TIMEOUT)) ||
 			(!GetSizeAsync(fd, &read_size[read_bufnum]))) {
 			uprintf("Read error: %s", WindowsErrorString());
-			ErrorStatus = RUFUS_ERROR(ERROR_READ_FAULT);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_READ_FAULT);
 			goto out;
 		}
 
@@ -2500,7 +2500,7 @@ void UpdateMD5Sum(const char* dest_dir, const char* md5sum_name)
 			uprintf("Updating %s:", md5_path);
 			display_header = FALSE;
 		}
-		uprintf("● %s", &modified_files.String[i][2]);
+		uprintf("â— %s", &modified_files.String[i][2]);
 		pos = str_pos - md5_data;
 		HashFile(HASH_MD5, modified_files.String[i], sum);
 		while ((pos > 0) && (md5_data[pos - 1] != '\n'))
@@ -2540,10 +2540,10 @@ void UpdateMD5Sum(const char* dest_dir, const char* md5sum_name)
 			path2[strlen(path2) - 4] = 0;
 			static_strcat(path2, "_original.efi");
 			if (res_data == NULL || !MoveFileU(path1, path2)) {
-				uprintf("Could not rename: %s → %s", path1, path2);
+				uprintf("Could not rename: %s â†’ %s", path1, path2);
 				continue;
 			}
-			uprintf("Renamed: %s → %s", path1, path2);
+			uprintf("Renamed: %s â†’ %s", path1, path2);
 			hFile = CreateFileA(path1, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL,
 				CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 			if ((hFile == NULL) || (hFile == INVALID_HANDLE_VALUE)) {

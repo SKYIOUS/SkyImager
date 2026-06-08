@@ -1,11 +1,11 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * SMART HDD vs Flash detection (using ATA over USB, S.M.A.R.T., etc.)
- * Copyright © 2013-2023 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2013-2023 Pete Batard <pete@akeo.ie>
  *
  * Based in part on scsiata.cpp from Smartmontools: http://smartmontools.sourceforge.net
- * Copyright © 2006-2012 Douglas Gilbert <dgilbert@interlog.com>
- * Copyright © 2009-2013 Christian Franke <smartmontools-support@lists.sourceforge.net>
+ * Copyright Â© 2006-2012 Douglas Gilbert <dgilbert@interlog.com>
+ * Copyright Â© 2009-2013 Christian Franke <smartmontools-support@lists.sourceforge.net>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 #include <ctype.h>
 #include <stddef.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "missing.h"
 #include "msapi_utf8.h"
 
@@ -39,7 +39,7 @@
 #include "smart.h"
 #include "hdd_vs_ufd.h"
 
-#if defined(RUFUS_TEST)
+#if defined(SKYIMAGER_TEST)
 /* Helper functions */
 static uint8_t GetAtaDirection(uint8_t AtaCmd, uint8_t Features) {
 	// Far from complete -- only the commands we *may* use.
@@ -169,7 +169,7 @@ BOOL ScsiPassthroughDirect(HANDLE hPhysical, uint8_t* Cdb, size_t CdbLen, uint8_
 
 
 /* See ftp://ftp.t10.org/t10/document.04/04-262r8.pdf, http://www.scsitoolbox.com/pdfs/UsingSAT.pdf,
- * as well as http://nevar.pl/pliki/ATA8-ACS-3.pdf‎ */
+ * as well as http://nevar.pl/pliki/ATA8-ACS-3.pdfâ€Ž */
 static int SatAtaPassthrough(HANDLE hPhysical, ATA_PASSTHROUGH_CMD* Command, void* DataBuffer, size_t BufLen, uint32_t Timeout)
 {
 	uint8_t Cdb[12] = {0};
@@ -516,7 +516,7 @@ int IsHDD(DWORD DriveIndex, uint16_t vid, uint16_t pid, const char* strid)
 		static_strcat(str, "Device score: ");
 		for (i = 0; i < score_list_size; i++)
 			safe_sprintf(&str[strlen(str)], sizeof(str) - strlen(str), "%+d", score_list[i]);
-		uprintf("%s=%+d → Detected as %s", str, score, (score > 0) ? "HDD" : "UFD");
+		uprintf("%s=%+d â†’ Detected as %s", str, score, (score > 0) ? "HDD" : "UFD");
 	}
 
 	return score;

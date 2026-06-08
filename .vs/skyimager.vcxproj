@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|ARM">
@@ -35,9 +35,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>rufus</ProjectName>
+    <ProjectName>skyimager</ProjectName>
     <ProjectGuid>{731858A7-0303-4988-877B-9C0DD6471864}</ProjectGuid>
-    <RootNamespace>rufus</RootNamespace>
+    <RootNamespace>skyimager</RootNamespace>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -121,7 +121,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <BuildLog />
     <ClCompile>
-      <PreprocessorDefinitions>_RUFUS;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SKYIMAGER;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\src;..\src\msvc-missing;..\src\ms-sys\inc;..\src\syslinux\libinstaller;..\src\syslinux\libfat;..\src\syslinux\win;..\src\libcdio;..\src\getopt;..\src\wimlib;..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -145,14 +145,14 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>type $(SolutionDir)res\loc\rufus.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
+      <Command>type $(SolutionDir)res\loc\skyimager.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
       <Message>Generating 'embedded.loc' file</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <BuildLog />
     <ClCompile>
-      <PreprocessorDefinitions>_RUFUS;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SKYIMAGER;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\src;..\src\msvc-missing;..\src\ms-sys\inc;..\src\syslinux\libinstaller;..\src\syslinux\libfat;..\src\syslinux\win;..\src\libcdio;..\src\getopt;..\src\wimlib;..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -177,14 +177,14 @@
       </Culture>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>type $(SolutionDir)res\loc\rufus.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
+      <Command>type $(SolutionDir)res\loc\skyimager.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
       <Message>Generating 'embedded.loc' file</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <BuildLog />
     <ClCompile>
-      <PreprocessorDefinitions>_RUFUS;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SKYIMAGER;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\src;..\src\msvc-missing;..\src\ms-sys\inc;..\src\syslinux\libinstaller;..\src\syslinux\libfat;..\src\syslinux\win;..\src\libcdio;..\src\getopt;..\src\wimlib;..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -209,7 +209,7 @@
       </Culture>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>type $(SolutionDir)res\loc\rufus.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
+      <Command>type $(SolutionDir)res\loc\skyimager.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
       <Message>Generating 'embedded.loc' file</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -220,7 +220,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>..\src;..\src\msvc-missing;..\src\ms-sys\inc;..\src\syslinux\libinstaller;..\src\syslinux\libfat;..\src\syslinux\win;..\src\libcdio;..\src\getopt;..\src\wimlib;..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_RUFUS;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SKYIMAGER;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;_CRTDBG_MAP_ALLOC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -244,14 +244,14 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>type $(SolutionDir)res\loc\rufus.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
+      <Command>type $(SolutionDir)res\loc\skyimager.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
       <Message>Generating 'embedded.loc' file</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <BuildLog />
     <ClCompile>
-      <PreprocessorDefinitions>_RUFUS;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SKYIMAGER;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\src;..\src\msvc-missing;..\src\ms-sys\inc;..\src\syslinux\libinstaller;..\src\syslinux\libfat;..\src\syslinux\win;..\src\libcdio;..\src\getopt;..\src\wimlib;..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -276,14 +276,14 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>type $(SolutionDir)res\loc\rufus.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
+      <Command>type $(SolutionDir)res\loc\skyimager.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
       <Message>Generating 'embedded.loc' file</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <BuildLog />
     <ClCompile>
-      <PreprocessorDefinitions>_RUFUS;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SKYIMAGER;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\src;..\src\msvc-missing;..\src\ms-sys\inc;..\src\syslinux\libinstaller;..\src\syslinux\libfat;..\src\syslinux\win;..\src\libcdio;..\src\getopt;..\src\wimlib;..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -310,14 +310,14 @@
       </Culture>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>type $(SolutionDir)res\loc\rufus.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
+      <Command>type $(SolutionDir)res\loc\skyimager.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
       <Message>Generating 'embedded.loc' file</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <BuildLog />
     <ClCompile>
-      <PreprocessorDefinitions>_RUFUS;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SKYIMAGER;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\src;..\src\msvc-missing;..\src\ms-sys\inc;..\src\syslinux\libinstaller;..\src\syslinux\libfat;..\src\syslinux\win;..\src\libcdio;..\src\getopt;..\src\wimlib;..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -344,7 +344,7 @@
       </Culture>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>type $(SolutionDir)res\loc\rufus.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
+      <Command>type $(SolutionDir)res\loc\skyimager.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
       <Message>Generating 'embedded.loc' file</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -354,7 +354,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <PreprocessorDefinitions>_RUFUS;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_SKYIMAGER;_OFF_T_DEFINED;_off_t=__int64;off_t=_off_t;COBJMACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
       <AdditionalIncludeDirectories>..\src;..\src\msvc-missing;..\src\ms-sys\inc;..\src\syslinux\libinstaller;..\src\syslinux\libfat;..\src\syslinux\win;..\src\libcdio;..\src\getopt;..\src\wimlib;..\res;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -379,7 +379,7 @@
       <PreprocessorDefinitions>_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PreBuildEvent>
-      <Command>type $(SolutionDir)res\loc\rufus.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
+      <Command>type $(SolutionDir)res\loc\skyimager.loc | findstr /v MSG_9 &gt; $(SolutionDir)res\loc\embedded.loc</Command>
       <Message>Generating 'embedded.loc' file</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
@@ -402,7 +402,7 @@
     <ClCompile Include="..\src\parser.c" />
     <ClCompile Include="..\src\pki.c" />
     <ClCompile Include="..\src\process.c" />
-    <ClCompile Include="..\src\rufus.c" />
+    <ClCompile Include="..\src\skyimager.c" />
     <ClCompile Include="..\src\hash.c" />
     <ClCompile Include="..\src\smart.c" />
     <ClCompile Include="..\src\stdfn.c" />
@@ -442,7 +442,7 @@
     <ClInclude Include="..\src\dos.h" />
     <ClInclude Include="..\src\registry.h" />
     <ClInclude Include="..\src\resource.h" />
-    <ClInclude Include="..\src\rufus.h" />
+    <ClInclude Include="..\src\skyimager.h" />
     <ClInclude Include="..\src\license.h" />
     <ClInclude Include="..\src\db.h" />
     <ClInclude Include="..\src\smart.h" />
@@ -455,15 +455,15 @@
     <ClInclude Include="..\src\xml.h" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="..\src\rufus.manifest" />
+    <Manifest Include="..\src\skyimager.manifest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\down.ico" />
-    <None Include="..\res\rufus.ico" />
+    <None Include="..\res\skyimager.ico" />
     <None Include="..\res\up.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\src\rufus.rc" />
+    <ResourceCompile Include="..\src\skyimager.rc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include=".\bled.vcxproj">

@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Licensing Data
- * Copyright © 2011-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2011-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +23,12 @@ const char* about_blurb_format =
 "\\fs18%s\\line\n"
 "\\line\n"
 "%s\\line\n"
-RUFUS_URL "\\line\n"
+SKYIMAGER_URL "\\line\n"
 "\\fs3 \\line\n"
 "\\fs18%s\\line\n"
 "\\line\n"
 "%s\\line\n"
-"https://github.com/pbatard/rufus/issues\\line\n"
+"https://github.com/SKYIOUS/SkyImager/issues\\line\n"
 "\\line\n"
 "\\b\\fs19 %s\\b0}";
 
@@ -165,9 +165,9 @@ const char* update_policy =
 "{\\rtf1\\ansi{\\fonttbl{\\f0\\fnil\\fcharset0 Microsoft Sans Serif;}}\n"
 "\\fs16\\b %s\\b0\\line\n"
 "%s\\par\n"
-"\\fs20•\\fs16  %s\\par\n"
-"\\fs20•\\fs16  %s\\par\n"
-"\\fs20•\\fs16  %s\\line\n"
+"\\fs20â€¢\\fs16  %s\\par\n"
+"\\fs20â€¢\\fs16  %s\\par\n"
+"\\fs20â€¢\\fs16  %s\\line\n"
 "\\line\n"
 "%s\\line\n\\line\n"
 "\\b %s\\b0\\line\n"

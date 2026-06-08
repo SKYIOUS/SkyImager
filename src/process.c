@@ -1,12 +1,12 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Process search functionality
  *
  * Modified from System Informer (a.k.a. Process Hacker):
  *   https://github.com/winsiderss/systeminformer
- * Copyright © 2017-2026 Pete Batard <pete@akeo.ie>
- * Copyright © 2017 dmex
- * Copyright © 2009-2016 wj32
+ * Copyright Â© 2017-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2017 dmex
+ * Copyright Â© 2009-2016 wj32
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include <windows.h>
 #include <assert.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "drive.h"
 #include "ntdll.h"
 #include "missing.h"
@@ -947,7 +947,7 @@ retry:
 			continue;
 		}
 		returned_mask |= blocking_process.Process[i].access_rights;
-		static_sprintf(tmp, "● [%llu] %s (%s)", blocking_process.Process[i].pid, blocking_process.Process[i].cmdline,
+		static_sprintf(tmp, "â— [%llu] %s (%s)", blocking_process.Process[i].pid, blocking_process.Process[i].cmdline,
 			access_rights_str[blocking_process.Process[i].access_rights & 0x7]);
 		StrArrayAdd(&BlockingProcessList, tmp, TRUE);
 		if (j++ == 0)

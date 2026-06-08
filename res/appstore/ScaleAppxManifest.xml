@@ -4,13 +4,13 @@
  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
  IgnorableNamespaces="uap">
   <Identity
-   Name="19453.net.Rufus"
+   Name="19453.net.SkyImager"
    Publisher="CN=7AC86D13-3E5A-491A-ADD5-80095C212740"
    Version="@VERSION@"
    ResourceId="split.scale-@SCALE@"/>
   <Properties>
     <ResourcePackage>true</ResourcePackage>
-    <DisplayName>Rufus</DisplayName>
+    <DisplayName>SkyImager</DisplayName>
     <PublisherDisplayName>Akeo Consulting</PublisherDisplayName>
     <Logo>Images\StoreLogo.png</Logo>
   </Properties>

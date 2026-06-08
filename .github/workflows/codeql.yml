@@ -1,4 +1,4 @@
-name: "CodeQL"
+﻿name: "CodeQL"
 
 on:
   push:
@@ -28,7 +28,7 @@ on:
       - '**.xml'
 
 env:
-  SOLUTION_FILE_PATH: ./rufus.sln
+  SOLUTION_FILE_PATH: ./skyimager.sln
   BUILD_CONFIGURATION: Release
   TARGET_PLATFORM: x64
 

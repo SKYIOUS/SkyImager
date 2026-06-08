@@ -33,8 +33,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - { sys: mingw64, env: x86_64, exe: rufus.exe }
-          - { sys: mingw32, env: i686, exe: rufus_x86.exe }
+          - { sys: mingw64, env: x86_64, exe: skyimager.exe }
+          - { sys: mingw32, env: i686, exe: skyimager_x86.exe }
 
     defaults:
       run:
@@ -66,7 +66,7 @@ jobs:
       # This ONLY works if the shell is bash or if using $env:GITHUB_OUTPUT
       run: |
         echo "option=--enable-alpha" >> $GITHUB_OUTPUT
-        sed -b -i 's/VALUE "InternalName", "Rufus"/VALUE "InternalName", "Rufus (ALPHA)"/' ./src/rufus.rc
+        sed -b -i 's/VALUE "InternalName", "SkyImager"/VALUE "InternalName", "SkyImager (ALPHA)"/' ./src/skyimager.rc
 
     - name: Set BETA
       id: set_beta
@@ -75,13 +75,13 @@ jobs:
       # This ONLY works if the shell is bash or if using $env:GITHUB_OUTPUT
       run: |
         echo "option=--enable-beta" >> $GITHUB_OUTPUT
-        sed -b -i 's/VALUE "InternalName", "Rufus"/VALUE "InternalName", "Rufus (BETA)"/' ./src/rufus.rc
+        sed -b -i 's/VALUE "InternalName", "SkyImager"/VALUE "InternalName", "SkyImager (BETA)"/' ./src/skyimager.rc
 
     - name: Build
       run: |
         ./configure --disable-debug ${{ steps.set_alpha.outputs.option }} ${{ steps.set_beta.outputs.option }}
         make -j4
-        mv ./src/rufus.exe ./${{ matrix.exe }}
+        mv ./src/skyimager.exe ./${{ matrix.exe }}
         strip ./${{ matrix.exe }}
         upx --lzma --best ./${{ matrix.exe }}
 

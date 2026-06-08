@@ -1,6 +1,6 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
- * Copyright © 2011-2026 Pete Batard <pete@akeo.ie>
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
+ * Copyright Â© 2011-2026 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@
 #include <assert.h>
 #include <delayimp.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "format.h"
 #include "missing.h"
 #include "resource.h"
@@ -65,7 +65,7 @@ enum bootcheck_return {
 	BOOTCHECK_GENERAL_ERROR = -3,
 };
 
-static const char* cmdline_hogger = ".\\rufus.com";
+static const char* cmdline_hogger = ".\\skyimager.com";
 static const char* ep_reg = "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer";
 static const char* vs_reg = "Software\\Microsoft\\VisualStudio";
 static const char* arch_name[ARCH_MAX] = {
@@ -79,7 +79,7 @@ static BOOL relaunch = FALSE;
 static BOOL dont_display_image_name = FALSE;
 static BOOL dont_process_dbt_devnodes = FALSE;
 static BOOL user_changed_label = FALSE;
-static BOOL user_deleted_rufus_dir = FALSE;
+static BOOL user_deleted_SKYIMAGER_dir = FALSE;
 static BOOL app_changed_label = FALSE;
 static BOOL allowed_filesystem[FS_MAX] = { 0 };
 static int64_t last_iso_blocking_status;
@@ -108,13 +108,13 @@ extern const char *bootmgr_efi_name, *efi_dirname, *efi_bootname[ARCH_MAX];
  * Globals
  */
 OPENED_LIBRARIES_VARS;
-RUFUS_UPDATE update = { 0 };
+SKYIMAGER_UPDATE update = { 0 };
 HINSTANCE hMainInstance;
 HWND hMainDialog, hMultiToolbar, hSaveToolbar, hHashToolbar, hAdvancedDeviceToolbar, hAdvancedFormatToolbar, hUpdatesDlg = NULL;
 HFONT hInfoFont = NULL, hSectionHeaderFont = NULL;
 HICON hSmallIcon, hBigIcon = NULL;
 uint8_t image_options = IMOP_WINTOGO;
-uint16_t rufus_version[3], embedded_sl_version[2];
+uint16_t skyimager_version[3], embedded_sl_version[2];
 uint32_t dur_mins, dur_secs;
 loc_cmd* selected_locale = NULL;
 WORD selected_langid = MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT);
@@ -131,7 +131,7 @@ BOOL usb_debug, use_fake_units, preserve_timestamps = FALSE, fast_zeroing = FALS
 BOOL zero_drive = FALSE, list_non_usb_removable_drives = FALSE, enable_file_indexing, large_drive = FALSE;
 BOOL write_as_image = FALSE, write_as_esp = FALSE, use_vds = FALSE, ignore_boot_marker = FALSE, save_image = FALSE;
 BOOL appstore_version = FALSE, is_vds_available = TRUE, persistent_log = FALSE, has_ffu_support = FALSE;
-BOOL expert_mode = FALSE, use_rufus_mbr = TRUE, bcdboot_supports_ex = FALSE;
+BOOL expert_mode = FALSE, use_SKYIMAGER_mbr = TRUE, bcdboot_supports_ex = FALSE;
 float fScale = 1.0f;
 int dialog_showing = 0, selection_default = BT_IMAGE, persistence_unit_selection = -1, imop_win_sel = 0;
 int default_fs, fs_type, boot_type, partition_type, target_type;
@@ -148,7 +148,7 @@ StrArray BlockingProcessList, ImageList;
 // Number of steps for each FS for FCC_STRUCTURE_PROGRESS
 const int nb_steps[FS_MAX] = { 5, 5, 12, 1, 10, 1, 1, 1, 1 };
 const char* flash_type[BADLOCKS_PATTERN_TYPES] = { "SLC", "MLC", "TLC" };
-RUFUS_DRIVE rufus_drive[MAX_DRIVES] = { 0 };
+SKYIMAGER_DRIVE DriveInfo[MAX_DRIVES] = { 0 };
 sbat_entry_t* sbat_entries = NULL;
 thumbprint_list_t *sb_active_certs = NULL, *sb_revoked_certs = NULL;
 
@@ -711,11 +711,11 @@ static void SetProposedLabel(int ComboIndex)
 	}
 
 	// Else if no existing label is available, propose one according to the size (eg: "256MB", "8GB")
-	if ((_stricmp(no_label, rufus_drive[ComboIndex].label) == 0) || (_stricmp(no_label, empty) == 0)
-		|| (safe_stricmp(lmprintf(MSG_207), rufus_drive[ComboIndex].label) == 0)) {
+	if ((_stricmp(no_label, DriveInfo[ComboIndex].label) == 0) || (_stricmp(no_label, empty) == 0)
+		|| (safe_stricmp(lmprintf(MSG_207), DriveInfo[ComboIndex].label) == 0)) {
 		SetWindowTextU(hLabel, SelectedDrive.proposed_label);
 	} else {
-		SetWindowTextU(hLabel, rufus_drive[ComboIndex].label);
+		SetWindowTextU(hLabel, DriveInfo[ComboIndex].label);
 	}
 }
 
@@ -933,14 +933,14 @@ static BOOL PopulateProperties(void)
 		SizeToHumanReadable(SelectedDrive.DiskSize, FALSE, TRUE));
 
 	// Add a tooltip (with the size of the device in parenthesis)
-	device_tooltip = (char*) malloc(safe_strlen(rufus_drive[device_index].name) + 32);
+	device_tooltip = (char*) malloc(safe_strlen(DriveInfo[device_index].name) + 32);
 	if (device_tooltip != NULL) {
 		if (right_to_left_mode)
-			safe_sprintf(device_tooltip, safe_strlen(rufus_drive[device_index].name) + 32, "(%s) %s",
-				SizeToHumanReadable(SelectedDrive.DiskSize, FALSE, FALSE), rufus_drive[device_index].name);
+			safe_sprintf(device_tooltip, safe_strlen(DriveInfo[device_index].name) + 32, "(%s) %s",
+				SizeToHumanReadable(SelectedDrive.DiskSize, FALSE, FALSE), DriveInfo[device_index].name);
 		else
-			safe_sprintf(device_tooltip, safe_strlen(rufus_drive[device_index].name) + 32, "%s (%s)",
-				rufus_drive[device_index].name, SizeToHumanReadable(SelectedDrive.DiskSize, FALSE, FALSE));
+			safe_sprintf(device_tooltip, safe_strlen(DriveInfo[device_index].name) + 32, "%s (%s)",
+				DriveInfo[device_index].name, SizeToHumanReadable(SelectedDrive.DiskSize, FALSE, FALSE));
 		CreateTooltip(hDeviceList, device_tooltip, -1);
 		free(device_tooltip);
 	}
@@ -959,7 +959,7 @@ BOOL CALLBACK LogCallback(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	LONG_PTR style;
 	DWORD log_size;
 	char *log_buffer = NULL, *filepath;
-	EXT_DECL(log_ext, "rufus.log", __VA_GROUP__("*.log"), __VA_GROUP__("Rufus log"));
+	EXT_DECL(log_ext, "skyimager.log", __VA_GROUP__("*.log"), __VA_GROUP__("SkyImager log"));
 	switch (message) {
 	case WM_INITDIALOG:
 		SetDarkModeForDlg(hDlg);
@@ -1202,7 +1202,7 @@ enum ArchType MachineToArch(WORD machine)
 /// Parse a PE executable file and return its CPU architecture.
 /// </summary>
 /// <param name="path">The path of the PE executable to parse.</param>
-/// <returns>An enum ArchType value (as defined in rufus.h)</returns>
+/// <returns>An enum ArchType value (as defined in skyimager.h)</returns>
 static uint8_t FindArch(const char* path)
 {
 	uint8_t ret = ARCH_UNKNOWN;
@@ -1274,7 +1274,7 @@ void GetBootladerInfo(void)
 		sb_signed = IsSignedBySecureBootAuthority(buf, len);
 		if (sb_signed)
 			img_report.has_secureboot_bootloader |= 1;
-		uprintf("  • %s%s", img_report.efi_boot_entry[i].path, sb_signed ? "*" : "");
+		uprintf("  â€¢ %s%s", img_report.efi_boot_entry[i].path, sb_signed ? "*" : "");
 		r = IsBootloaderRevoked(buf, len);
 		if (r > 0) {
 			assert(r <= ARRAYSIZE(revocation_type));
@@ -1290,7 +1290,7 @@ void GetBootladerInfo(void)
 DWORD WINAPI ImageScanThread(LPVOID param)
 {
 	// Regexp patterns used to match ISO labels for the Red Hat 8 derivatives
-	// where we should apply an inst.stage2 ➔ inst.repo workaround for ISO
+	// where we should apply an inst.stage2 âž” inst.repo workaround for ISO
 	// mode (per: https://github.com/rhinstaller/anaconda/pull/3529).
 	const char* redhat8_derivative[] = {
 		"^AlmaLinux-[8-9].*",		// AlmaLinux 8.x and 9.x
@@ -1335,7 +1335,7 @@ DWORD WINAPI ImageScanThread(LPVOID param)
 	ComboBox_ResetContent(hImageOption);
 	imop_win_sel = 0;
 
-	if ((ErrorStatus == RUFUS_ERROR(ERROR_CANCELLED)) || (img_report.image_size == 0) ||
+	if ((ErrorStatus == SKYIMAGER_ERROR(ERROR_CANCELLED)) || (img_report.image_size == 0) ||
 		(!img_report.is_iso && (img_report.is_bootable_img <= 0) && !img_report.is_windows_img)) {
 		// Failed to scan image
 		if (img_report.is_bootable_img < 0)
@@ -1555,11 +1555,11 @@ static DWORD WINAPI BootCheckThread(LPVOID param)
 				char* iso_image = lmprintf(MSG_036);
 				char* dd_image = lmprintf(MSG_095);
 				StrArrayCreate(&selection.choices, 4);
-				// If the ISO is small enough to be written as an ESP and we are using GPT add the ISO → ESP option
+				// If the ISO is small enough to be written as an ESP and we are using GPT add the ISO â†’ ESP option
 				if ((img_report.projected_size < MAX_ISO_TO_ESP_SIZE) && HAS_REGULAR_EFI(img_report) &&
 					(partition_type == PARTITION_STYLE_GPT) && IS_FAT(fs_type)) {
 					StrArrayAdd(&selection.choices, lmprintf(MSG_276, iso_image), TRUE);
-					StrArrayAdd(&selection.choices, lmprintf(MSG_277, "ISO → ESP"), TRUE);
+					StrArrayAdd(&selection.choices, lmprintf(MSG_277, "ISO â†’ ESP"), TRUE);
 					StrArrayAdd(&selection.choices, lmprintf(MSG_277, dd_image), TRUE);
 					i = SelectionDialog(lmprintf(MSG_274, "ISOHybrid"), lmprintf(MSG_275, iso_image, dd_image, iso_image, dd_image), &selection);
 					StrArrayDestroy(&selection.choices);
@@ -1766,7 +1766,7 @@ static DWORD WINAPI BootCheckThread(LPVOID param)
 			char* iso_image = lmprintf(MSG_036);
 			StrArrayCreate(&selection.choices, 2);
 			StrArrayAdd(&selection.choices, lmprintf(MSG_276, iso_image), TRUE);
-			StrArrayAdd(&selection.choices, lmprintf(MSG_277, "ISO → ESP"), TRUE);
+			StrArrayAdd(&selection.choices, lmprintf(MSG_277, "ISO â†’ ESP"), TRUE);
 			i = SelectionDialog(lmprintf(MSG_274, "ESP"), lmprintf(MSG_310), &selection);
 			StrArrayDestroy(&selection.choices);
 			if (i < 0)	// Cancel
@@ -2064,7 +2064,7 @@ static void InitDialog(HWND hDlg)
 	PF_TYPE_DECL(WINAPI, BOOL, IsWow64Process2, (HANDLE, USHORT*, USHORT*));
 	PF_INIT(IsWow64Process2, Kernel32);
 
-#ifdef RUFUS_TEST
+#ifdef SKYIMAGER_TEST
 	ShowWindow(GetDlgItem(hDlg, IDC_TEST), SW_SHOW);
 #endif
 
@@ -2095,7 +2095,7 @@ static void InitDialog(HWND hDlg)
 	GetWindowTextU(GetDlgItem(hDlg, IDCANCEL), uppercase_close, sizeof(uppercase_close));
 	CharUpperBuffU(uppercase_close, sizeof(uppercase_close));
 	// Hardcoded exception for German
-	if (strcmp("SCHLIEßEN", uppercase_close) == 0)
+	if (strcmp("SCHLIEÃŸEN", uppercase_close) == 0)
 		strcpy(uppercase_close, "SCHLIESSEN");
 	SetWindowTextU(GetDlgItem(hDlg, IDCANCEL), uppercase_close);
 	GetWindowTextU(GetDlgItem(hDlg, IDC_SELECT), uppercase_select[0], sizeof(uppercase_select[0]));
@@ -2128,10 +2128,10 @@ static void InitDialog(HWND hDlg)
 	// version using strtok() than using GetFileVersionInfo()
 	token = strtok(tmp, " ");
 	for (i = 0; (i < 3) && ((token = strtok(NULL, ".")) != NULL); i++)
-		rufus_version[i] = (uint16_t)atoi(token);
+		skyimager_version[i] = (uint16_t)atoi(token);
 
 	// Redefine the title to be able to add "Alpha" or "Beta"
-	static_sprintf(tmp, APPLICATION_NAME " %d.%d.%d%s%s", rufus_version[0], rufus_version[1], rufus_version[2],
+	static_sprintf(tmp, APPLICATION_NAME " %d.%d.%d%s%s", skyimager_version[0], skyimager_version[1], skyimager_version[2],
 		IsAlphaOrBeta(), (ini_file != NULL)?"(Portable)":"");
 	SetWindowTextU(hDlg, tmp);
 	// Now that we have a title, we can find the handle of our Dialog
@@ -2147,11 +2147,11 @@ static void InitDialog(HWND hDlg)
 			uprintf(timestamp);
 		}
 	}
-	uprintf(APPLICATION_NAME " " APPLICATION_ARCH " v%d.%d.%d%s%s", rufus_version[0], rufus_version[1], rufus_version[2],
+	uprintf(APPLICATION_NAME " " APPLICATION_ARCH " v%d.%d.%d%s%s", skyimager_version[0], skyimager_version[1], skyimager_version[2],
 		IsAlphaOrBeta(), (ini_file != NULL)?"(Portable)": (appstore_version ? "(AppStore version)" : ""));
 	// Display a notice if running x86 emulation on ARM
 	// Oh, and https://devblogs.microsoft.com/oldnewthing/20220209-00/?p=106239 is *WRONG*:
-	// Get­Native­System­Info() will not tell you what the native system architecture is when
+	// GetÂ­NativeÂ­SystemÂ­Info() will not tell you what the native system architecture is when
 	// running x86 code on ARM64. Instead you have to use IsWow64Process2(), which is only
 	// available on Windows 10 1709 or later...
 	if ((pfIsWow64Process2 != NULL) && pfIsWow64Process2(GetCurrentProcess(), &ProcessMachine, &NativeMachine)) {
@@ -2311,7 +2311,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 	switch (message) {
 
 	case WM_COMMAND:
-#ifdef RUFUS_TEST
+#ifdef SKYIMAGER_TEST
 		if (LOWORD(wParam) == IDC_TEST) {
 			break;
 		}
@@ -2343,7 +2343,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 					lmprintf(MSG_049), lmprintf(MSG_105)) == IDYES)) {
 					// Operation may have completed in the meantime
 					if (format_thread != NULL) {
-						ErrorStatus = RUFUS_ERROR(ERROR_CANCELLED);
+						ErrorStatus = SKYIMAGER_ERROR(ERROR_CANCELLED);
 						PrintInfo(0, MSG_201);
 						uprintf("Cancelling");
 						//  Start a timer to detect blocking operations during ISO file extraction
@@ -2359,15 +2359,15 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 				return (INT_PTR)TRUE;
 			} else if (op_in_progress) {
 				// User might be trying to cancel during preliminary checks
-				ErrorStatus = RUFUS_ERROR(ERROR_CANCELLED);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_CANCELLED);
 				PrintInfo(0, MSG_201);
 				EnableWindow(GetDlgItem(hDlg, IDCANCEL), TRUE);
 				return (INT_PTR)TRUE;
 			}
 
-			// Save or append the current log to %LocalAppData%\Rufus\rufus.log
+			// Save or append the current log to %LocalAppData%\SkyImager\skyimager.log
 			log_size = GetWindowTextLengthU(hLog);
-			if ((!user_deleted_rufus_dir) && (log_size > 0) && ((log_buffer = (char*)malloc(log_size + 2)) != NULL)) {
+			if ((!user_deleted_SKYIMAGER_dir) && (log_size > 0) && ((log_buffer = (char*)malloc(log_size + 2)) != NULL)) {
 				log_size = GetDlgItemTextU(hLogDialog, IDC_LOG_EDIT, log_buffer, log_size);
 				if (log_size-- > 1) {
 					if (persistent_log) {
@@ -2378,7 +2378,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 					IGNORE_RETVAL(_chdirU(app_data_dir));
 					IGNORE_RETVAL(_mkdir(FILES_DIR));
 					IGNORE_RETVAL(_chdir(FILES_DIR));
-					FileIO(persistent_log ? FILE_IO_APPEND : FILE_IO_WRITE, "rufus.log", &log_buffer, &log_size);
+					FileIO(persistent_log ? FILE_IO_APPEND : FILE_IO_WRITE, "skyimager.log", &log_buffer, &log_size);
 				}
 				safe_free(log_buffer);
 			}
@@ -2658,7 +2658,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 				ErrorStatus = 0;
 				if (CreateThread(NULL, 0, ImageScanThread, NULL, 0, NULL) == NULL) {
 					uprintf("Unable to start ISO scanning thread");
-					ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_START_THREAD));
+					ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_START_THREAD));
 				}
 			}
 			break;
@@ -2698,7 +2698,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 			// On exit, this thread sends message UM_FORMAT_START back to this dialog.
 			if (CreateThread(NULL, 0, BootCheckThread, NULL, 0, NULL) == NULL) {
 				uprintf("Unable to start boot check thread");
-				ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_START_THREAD));
+				ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_START_THREAD));
 				PostMessage(hMainDialog, UM_FORMAT_COMPLETED, (WPARAM)FALSE, 0);
 			}
 			break;
@@ -2728,7 +2728,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 					SendMessage(hMainDialog, UM_TIMER_START, 0, 0);
 				} else {
 					uprintf("Unable to start hash thread");
-					ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_START_THREAD));
+					ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_START_THREAD));
 					PostMessage(hMainDialog, UM_FORMAT_COMPLETED, (WPARAM)FALSE, 0);
 				}
 			}
@@ -2739,7 +2739,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 				if (!save_image) {
 					uprintf("Unable to start image save thread");
 					if (!IS_ERROR(ErrorStatus))
-						ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_START_THREAD));
+						ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_START_THREAD));
 					PostMessage(hMainDialog, UM_FORMAT_COMPLETED, (WPARAM)FALSE, 0);
 				}
 			}
@@ -3140,7 +3140,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 		format_thread = CreateThread(NULL, 0, FormatThread, (LPVOID)(uintptr_t)DeviceNum, 0, NULL);
 		if (format_thread == NULL) {
 			uprintf("Unable to start formatting thread");
-			ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_START_THREAD));
+			ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_START_THREAD));
 			PostMessage(hMainDialog, UM_FORMAT_COMPLETED, (WPARAM)FALSE, 0);
 		} else {
 			SetThreadPriority(format_thread, default_thread_priority);
@@ -3166,7 +3166,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 			EnableControls(TRUE, FALSE);
 			break;
 		}
-		ErrorStatus = RUFUS_ERROR((wParam == BOOTCHECK_DOWNLOAD_ERROR) ? APPERR(ERROR_CANT_DOWNLOAD) : ERROR_GEN_FAILURE);
+		ErrorStatus = SKYIMAGER_ERROR((wParam == BOOTCHECK_DOWNLOAD_ERROR) ? APPERR(ERROR_CANT_DOWNLOAD) : ERROR_GEN_FAILURE);
 		// Fall through
 
 	case UM_FORMAT_COMPLETED:
@@ -3243,7 +3243,7 @@ static INT_PTR CALLBACK MainCallback(HWND hDlg, UINT message, WPARAM wParam, LPA
 					// A port cycle usually helps with a device not ready
 					int index = ComboBox_GetCurSel(hDeviceList);
 					if (index >= 0) {
-						uprintf("Device not ready → Trying to cycle port...");
+						uprintf("Device not ready â†’ Trying to cycle port...");
 						CyclePort(index);
 					}
 				}
@@ -3267,7 +3267,7 @@ static void PrintUsage(char* appname)
 	printf("  -x, --extra-devs\n");
 	printf("     List extra devices, such as USB HDDs\n");
 	printf("  -g, --gui\n");
-	printf("     Start in GUI mode (disable the 'rufus.com' commandline hogger)\n");
+	printf("     Start in GUI mode (disable the 'skyimager.com' commandline hogger)\n");
 	printf("  -i PATH, --iso=PATH\n");
 	printf("     Select the ISO image pointed by PATH to be used on startup\n");
 	printf("  -l LOCALE, --locale=LOCALE\n");
@@ -3351,7 +3351,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 #endif
 {
-	const char* rufus_loc = "rufus.loc";
+	const char* skyimager_loc = "skyimager.loc";
 	int i, opt, option_index = 0, argc = 0, si = 0, lcid = GetUserDefaultUILanguage();
 	int wait_for_mutex = 0, forced_windows_version = 0;
 	uint32_t wue_options;
@@ -3505,12 +3505,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	uprintf("Dat dir: '%s'", app_data_dir);
 	uprintf("Tmp dir: '%s'", temp_dir);
 
-	// Look for a rufus.app file in the current app directory
+	// Look for a skyimager.app file in the current app directory
 	// Since Microsoft makes it downright impossible to pass an arg in the app manifest
 	// and the automated VS2019 package building process doesn't like renaming the .exe
 	// right under its nose (else we would use the same trick as for portable vs regular)
 	// we use yet another workaround to detect if we are running the AppStore version...
-	static_sprintf(tmp_path, "%srufus.app", app_dir);
+	static_sprintf(tmp_path, 	"%sskyimager.app", app_dir);
 	if (PathFileExistsU(tmp_path)) {
 		appstore_version = TRUE;
 		goto skip_args_processing;
@@ -3541,7 +3541,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					goto skip_args_processing;
 				}
 			}
-			// If our application name contains a 'p' (for "portable") create a 'rufus.ini'
+			// If our application name contains a 'p' (for "portable") create a 'skyimager.ini'
 			// NB: argv[0] is populated in the previous loop
 			tmp = &argv[0][strlen(argv[0]) - 1];
 			while ((((uintptr_t)tmp) > ((uintptr_t)argv[0])) && (*tmp != '\\'))
@@ -3643,7 +3643,7 @@ skip_args_processing:
 		uprintf("AppStore version detected");
 
 	// Look for a .ini file in the current app directory
-	static_sprintf(ini_path, "%srufus.ini", app_dir);
+	static_sprintf(ini_path, "%sskyimager.ini", app_dir);
 	fd = fopenU(ini_path, ini_flags);	// Will create the file if portable mode is requested
 #if !defined(ALPHA)
 	// Using the string directly in safe_strcmp() would call GetSignatureName() twice
@@ -3682,7 +3682,7 @@ skip_args_processing:
 	use_vds = ReadSettingBool(SETTING_USE_VDS) && is_vds_available;
 	usb_debug = ReadSettingBool(SETTING_ENABLE_USB_DEBUG);
 	cdio_loglevel_default = usb_debug ? CDIO_LOG_INFO : CDIO_LOG_WARN;
-	use_rufus_mbr = !ReadSettingBool(SETTING_DISABLE_RUFUS_MBR);
+	use_SKYIMAGER_mbr = !ReadSettingBool(SETTING_DISABLE_SKYIMAGER_MBR);
 //	validate_md5sum = ReadSettingBool(SETTING_ENABLE_RUNTIME_VALIDATION);
 	detect_fakes = !ReadSettingBool(SETTING_DISABLE_FAKE_DRIVES_CHECK);
 	allow_dual_uefi_bios = ReadSettingBool(SETTING_ENABLE_WIN_DUAL_EFI_BIOS);
@@ -3715,11 +3715,11 @@ skip_args_processing:
 	init_localization();
 
 	// Seek for a loc file in the application directory
-	static_sprintf(loc_file, "%s%s", app_dir, rufus_loc);
+	static_sprintf(loc_file, "%s%s", 	app_dir, skyimager_loc);
 	if (GetFileAttributesU(loc_file) == INVALID_FILE_ATTRIBUTES) {
 		uprintf("loc file not found in current directory - embedded one will be used");
 
-		loc_data = (BYTE*)GetResource(hMainInstance, MAKEINTRESOURCEA(IDR_LC_RUFUS_LOC), _RT_RCDATA, "embedded.loc", &loc_size, FALSE);
+		loc_data = (BYTE*)GetResource(hMainInstance, MAKEINTRESOURCEA(IDR_LC_SKYIMAGER_LOC), _RT_RCDATA, "embedded.loc", &loc_size, FALSE);
 		if ( (GetTempFileNameU(temp_dir, APPLICATION_NAME, 0, loc_file) == 0) || (loc_file[0] == 0) ) {
 			// If we don't have a working temp API, forget it
 			uprintf("FATAL: Unable to create temp loc file: %s", WindowsErrorString());
@@ -3990,9 +3990,9 @@ extern int TestHashes(void);
 			}
 			// Alt-A => Toggle use of Rufus MBR for Windows boot
 			if ((msg.message == WM_SYSKEYDOWN) && (msg.wParam == 'A')) {
-				use_rufus_mbr = !use_rufus_mbr;
-				WriteSettingBool(SETTING_DISABLE_RUFUS_MBR, !use_rufus_mbr);
-				PrintStatusTimeout(lmprintf(MSG_349), use_rufus_mbr);
+				use_SKYIMAGER_mbr = !use_SKYIMAGER_mbr;
+				WriteSettingBool(SETTING_DISABLE_SKYIMAGER_MBR, !use_SKYIMAGER_mbr);
+				PrintStatusTimeout(lmprintf(MSG_349), use_SKYIMAGER_mbr);
 				continue;
 			}
 			// Alt-B => Toggle fake drive detection during bad blocks check
@@ -4018,7 +4018,7 @@ extern int TestHashes(void);
 				static_sprintf(tmp_path, "%s\\%s", app_data_dir, FILES_DIR);
 				PrintStatusDebug(STATUS_MSG_TIMEOUT, MSG_264, tmp_path);
 				SHDeleteDirectoryExU(NULL, tmp_path, FOF_NO_UI);
-				user_deleted_rufus_dir = TRUE;
+				user_deleted_SKYIMAGER_dir = TRUE;
 				continue;
 			}
 			// Alt-E => Enhanced installation mode (allow dual UEFI/BIOS mode and FAT32 for Windows)
@@ -4345,8 +4345,8 @@ out:
 /*
  * The following adds a Load Configuration section in .rdata for MinGW, that can then be referenced
  * by a PE post processing script to emulate the /DEPENDENTLOADFLAG:0x800 behaviour of MSVC.
- * See https://github.com/pbatard/rufus/blob/master/loadcfg.py for such a script.
- * Note however that, per https://github.com/pbatard/rufus/issues/2701#issuecomment-2874788564
+ * See https://github.com/SKYIOUS/SkyImager/blob/master/loadcfg.py for such a script.
+ * Note however that, per https://github.com/SKYIOUS/SkyImager/issues/2701#issuecomment-2874788564
  * /DEPENDENTLOADFLAG is far from being the ultimate solution to stop DLL side-loading vulnerabilities...
  */
 #if defined(__MINGW32__)
@@ -4354,7 +4354,7 @@ out:
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-const-variable"
 // Add a 16-byte marker for scripts to easily locate this section.
-static const char _load_config_marker[16] __attribute__((aligned(16))) __attribute__((section(".rdata"))) = "_RUFUS_LOAD_CFG";
+static const char _load_config_marker[16] __attribute__((aligned(16))) __attribute__((section(".rdata"))) = "_SKYIMAGER_LOAD_CFG";
 #if defined(_M_AMD64)
 static const IMAGE_LOAD_CONFIG_DIRECTORY64 _load_config __attribute__((aligned(16))) __attribute__((section(".rdata"))) = {
 	.Size = sizeof(IMAGE_LOAD_CONFIG_DIRECTORY64),

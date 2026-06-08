@@ -1,7 +1,7 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Formatting function calls
- * Copyright © 2011-2025 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2011-2025 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 #include <vds.h>
 #endif
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "format.h"
 #include "missing.h"
 #include "resource.h"
@@ -74,7 +74,7 @@ extern const int nb_steps[FS_MAX];
 extern const char* md5sum_name[2];
 extern uint32_t dur_mins, dur_secs;
 extern BOOL force_large_fat32, enable_ntfs_compression, lock_drive, zero_drive, fast_zeroing, enable_file_indexing;
-extern BOOL write_as_image, use_vds, write_as_esp, is_vds_available, has_ffu_support, use_rufus_mbr;
+extern BOOL write_as_image, use_vds, write_as_esp, is_vds_available, has_ffu_support, use_SKYIMAGER_mbr;
 extern char* archive_path;
 uint8_t *grub2_buf = NULL, *sec_buf = NULL;
 long grub2_len;
@@ -139,38 +139,38 @@ static BOOLEAN __stdcall FormatExCallback(FILE_SYSTEM_CALLBACK_COMMAND Command, 
 		UpdateProgress(OP_CREATE_FS, 100.0f);
 		if(*(BOOLEAN*)pData == FALSE) {
 			uprintf("Error while formatting");
-			ErrorStatus = RUFUS_ERROR(ERROR_GEN_FAILURE);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_GEN_FAILURE);
 		}
 		break;
 	case FCC_DONE_WITH_STRUCTURE:
 		break;
 	case FCC_INCOMPATIBLE_FILE_SYSTEM:
 		uprintf("Incompatible File System");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_INCOMPATIBLE_FS));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_INCOMPATIBLE_FS));
 		break;
 	case FCC_ACCESS_DENIED:
 		uprintf("Access denied");
-		ErrorStatus = RUFUS_ERROR(ERROR_ACCESS_DENIED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_ACCESS_DENIED);
 		break;
 	case FCC_MEDIA_WRITE_PROTECTED:
 		uprintf("Media is write protected");
-		ErrorStatus = RUFUS_ERROR(ERROR_WRITE_PROTECT);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_PROTECT);
 		break;
 	case FCC_VOLUME_IN_USE:
 		uprintf("Volume is in use");
-		ErrorStatus = RUFUS_ERROR(ERROR_DEVICE_IN_USE);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_DEVICE_IN_USE);
 		break;
 	case FCC_DEVICE_NOT_READY:
 		uprintf("The device is not ready");
-		ErrorStatus = RUFUS_ERROR(ERROR_NOT_READY);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_READY);
 		break;
 	case FCC_CANT_QUICK_FORMAT:
 		uprintf("Cannot quick format this volume");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_QUICK_FORMAT));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_QUICK_FORMAT));
 		break;
 	case FCC_BAD_LABEL:
 		uprintf("Bad label");
-		ErrorStatus = RUFUS_ERROR(ERROR_LABEL_TOO_LONG);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_LABEL_TOO_LONG);
 		break;
 	case FCC_OUTPUT:
 		OutputUTF8Message(((PTEXTOUTPUT)pData)->Output);
@@ -178,24 +178,24 @@ static BOOLEAN __stdcall FormatExCallback(FILE_SYSTEM_CALLBACK_COMMAND Command, 
 	case FCC_CLUSTER_SIZE_TOO_BIG:
 	case FCC_CLUSTER_SIZE_TOO_SMALL:
 		uprintf("Unsupported cluster size");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_INVALID_CLUSTER_SIZE));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_INVALID_CLUSTER_SIZE));
 		break;
 	case FCC_VOLUME_TOO_BIG:
 	case FCC_VOLUME_TOO_SMALL:
 		uprintf("Volume is too %s", (Command == FCC_VOLUME_TOO_BIG) ? "big" : "small");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_INVALID_VOLUME_SIZE));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_INVALID_VOLUME_SIZE));
 		break;
 	case FCC_NO_MEDIA_IN_DRIVE:
 		uprintf("No media in drive");
-		ErrorStatus = RUFUS_ERROR(ERROR_NO_MEDIA_IN_DRIVE);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_NO_MEDIA_IN_DRIVE);
 		break;
 	case FCC_ALIGNMENT_VIOLATION:
 		uprintf("Partition start offset is not aligned to the cluster size");
-		ErrorStatus = RUFUS_ERROR(ERROR_OFFSET_ALIGNMENT_VIOLATION);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_OFFSET_ALIGNMENT_VIOLATION);
 		break;
 	default:
 		uprintf("FormatExCallback: Received unhandled command 0x%02X - aborting", Command);
-		ErrorStatus = RUFUS_ERROR(ERROR_NOT_SUPPORTED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_SUPPORTED);
 		break;
 	}
 	return (!IS_ERROR(ErrorStatus));
@@ -357,7 +357,7 @@ static BOOL FormatNativeVds(DWORD DriveIndex, uint64_t PartitionOffset, DWORD Cl
 	wVolumeName = utf8_to_wchar(VolumeName);
 	if (wVolumeName == NULL) {
 		uprintf("Could not read volume name");
-		ErrorStatus = RUFUS_ERROR(ERROR_GEN_FAILURE);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_GEN_FAILURE);
 		goto out;
 	}
 
@@ -569,7 +569,7 @@ static BOOL FormatNativeVds(DWORD DriveIndex, uint64_t PartitionOffset, DWORD Cl
 
 out:
 	if ((!bFoundVolume) && (ErrorStatus == 0))
-		ErrorStatus = RUFUS_ERROR(ERROR_PATH_NOT_FOUND);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_PATH_NOT_FOUND);
 	safe_free(VolumeName);
 	safe_free(wVolumeName);
 	safe_free(wLabel);
@@ -601,7 +601,7 @@ static BOOL FormatNative(DWORD DriveIndex, uint64_t PartitionOffset, DWORD Clust
 	wVolumeName = utf8_to_wchar(VolumeName);
 	if (wVolumeName == NULL) {
 		uprintf("Could not read volume name (%s)", VolumeName);
-		ErrorStatus = RUFUS_ERROR(ERROR_GEN_FAILURE);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_GEN_FAILURE);
 		goto out;
 	}
 	// Hey, nice consistency here, Microsoft! -  FormatEx() fails if wVolumeName has
@@ -654,7 +654,7 @@ static BOOL FormatNative(DWORD DriveIndex, uint64_t PartitionOffset, DWORD Clust
 
 out:
 	if (!r && !IS_ERROR(ErrorStatus))
-		ErrorStatus = RUFUS_ERROR(SCODE_CODE(GetLastError()));
+		ErrorStatus = SKYIMAGER_ERROR(SCODE_CODE(GetLastError()));
 	safe_free(VolumeName);
 	safe_free(wVolumeName);
 	safe_free(wLabel);
@@ -666,7 +666,7 @@ BOOL FormatPartition(DWORD DriveIndex, uint64_t PartitionOffset, DWORD UnitAlloc
 {
 	if ((DriveIndex < 0x80) || (DriveIndex > 0x100) || (FSType >= FS_MAX) ||
 		((UnitAllocationSize != 0) && (!IS_POWER_OF_2(UnitAllocationSize)))) {
-		ErrorStatus = RUFUS_ERROR(ERROR_INVALID_PARAMETER);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_INVALID_PARAMETER);
 		return FALSE;
 	}
 	actual_fs_type = FSType;
@@ -722,7 +722,7 @@ static BOOL ClearMBRGPT(HANDLE hPhysicalDrive, LONGLONG DiskSize, DWORD SectorSi
 	uint8_t* pZeroBuf = calloc(SectorSize, MAX_SECTORS_TO_CLEAR);
 
 	if (pZeroBuf == NULL) {
-		ErrorStatus = RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY);
 		goto out;
 	}
 
@@ -783,13 +783,13 @@ static BOOL WriteMBR(HANDLE hPhysicalDrive)
 	buffer = (uint8_t*)_mm_malloc(SelectedDrive.SectorSize, 16);
 	if (buffer == NULL) {
 		uprintf("Could not allocate memory for MBR");
-		ErrorStatus = RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY);
 		goto out;
 	}
 
 	if (!read_sectors(hPhysicalDrive, SelectedDrive.SectorSize, 0, 1, buffer)) {
 		uprintf("Could not read MBR");
-		ErrorStatus = RUFUS_ERROR(ERROR_READ_FAULT);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_READ_FAULT);
 		goto out;
 	}
 
@@ -819,7 +819,7 @@ static BOOL WriteMBR(HANDLE hPhysicalDrive)
 
 	if (!write_sectors(hPhysicalDrive, SelectedDrive.SectorSize, 0, 1, buffer)) {
 		uprintf("Could not write MBR");
-		ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 		goto out;
 	}
 
@@ -876,7 +876,7 @@ static BOOL WriteMBR(HANDLE hPhysicalDrive)
 
 	// If everything else failed, fall back to a conventional Windows/Rufus MBR
 windows_mbr:
-	if (needs_masquerading || use_rufus_mbr) {
+	if (needs_masquerading || use_SKYIMAGER_mbr) {
 		uprintf(using_msg, APPLICATION_NAME);
 		r = write_rufus_mbr(fp);
 	} else {
@@ -934,7 +934,7 @@ static BOOL WriteSBR(HANDLE hPhysicalDrive)
 	case BT_GRUB2:
 		if (grub2_buf != NULL) {
 			uprintf("Writing Grub 2.0 SBR (from download) %s",
-				IsBufferInDB(grub2_buf, grub2_len)?"✓":"✗");
+				IsBufferInDB(grub2_buf, grub2_len)?"âœ“":"âœ—");
 			buf = grub2_buf;
 			size = (DWORD)grub2_len;
 		} else {
@@ -1068,7 +1068,7 @@ BOOL WritePBR(HANDLE hLogicalVolume)
 		uprintf("Unsupported FS for FS BR processing - aborting");
 		break;
 	}
-	ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+	ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 	return FALSE;
 }
 
@@ -1170,7 +1170,7 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 		buf_size = ((DD_BUFFER_SIZE + SelectedDrive.SectorSize - 1) / SelectedDrive.SectorSize) * SelectedDrive.SectorSize;
 		buffer = (uint8_t*)_mm_malloc(buf_size, SelectedDrive.SectorSize);
 		if (buffer == NULL) {
-			ErrorStatus = RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY);
 			uprintf("Could not allocate disk zeroing buffer");
 			goto out;
 		}
@@ -1183,7 +1183,7 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 		if (fast_zeroing) {
 			cmp_buffer = (uint32_t*)_mm_malloc(buf_size, SelectedDrive.SectorSize);
 			if (cmp_buffer == NULL) {
-				ErrorStatus = RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY);
 				uprintf("Could not allocate disk comparison buffer");
 				goto out;
 			}
@@ -1261,7 +1261,7 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 						goto out;
 					}
 				} else {
-					ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+					ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 					goto out;
 				}
 				Sleep(200);
@@ -1276,12 +1276,12 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 			OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 		if (hSourceImage == INVALID_HANDLE_VALUE) {
 			uprintf("Could not open image '%s': %s", image_path, WindowsErrorString());
-			ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 			goto out;
 		}
 		sec_buf = (uint8_t*)_mm_malloc(SelectedDrive.SectorSize, SelectedDrive.SectorSize);
 		if (sec_buf == NULL) {
-			ErrorStatus = RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY);
 			uprintf("Could not allocate disk write buffer");
 			goto out;
 		}
@@ -1305,7 +1305,7 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 		if ((bled_ret < 0) && (SCODE_CODE(ErrorStatus) != ERROR_CANCELLED)) {
 			// Unfortunately, different compression backends return different negative error codes
 			uprintf("Could not write compressed image: %lld", bled_ret);
-			ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 			goto out;
 		}
 	} else {
@@ -1324,7 +1324,7 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 			FILE_SHARE_READ, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN);
 		if (hSourceImage == NULL) {
 			uprintf("Could not open image '%s': %s", image_path, WindowsErrorString());
-			ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 			goto out;
 		}
 
@@ -1332,7 +1332,7 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 		buf_size = ((DD_BUFFER_SIZE + SelectedDrive.SectorSize - 1) / SelectedDrive.SectorSize) * SelectedDrive.SectorSize;
 		buffer = (uint8_t*)_mm_malloc(buf_size * NUM_BUFFERS, SelectedDrive.SectorSize);
 		if (buffer == NULL) {
-			ErrorStatus = RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY);
 			uprintf("Could not allocate disk write buffer");
 			goto out;
 		}
@@ -1356,7 +1356,7 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 			if ((!WaitFileAsync(hSourceImage, DRIVE_ACCESS_TIMEOUT)) ||
 				(!GetSizeAsync(hSourceImage, &read_size[read_bufnum]))) {
 				uprintf("\r\nRead error: %s", WindowsErrorString());
-				ErrorStatus = RUFUS_ERROR(ERROR_READ_FAULT);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_READ_FAULT);
 				goto out;
 			}
 
@@ -1400,7 +1400,7 @@ static BOOL WriteDrive(HANDLE hPhysicalDrive, BOOL bZeroDrive)
 						goto out;
 					}
 				} else {
-					ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+					ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 					goto out;
 				}
 				Sleep(200);
@@ -1498,14 +1498,14 @@ DWORD WINAPI FormatThread(void* param)
 	PrintInfoDebug(0, MSG_225);
 	hPhysicalDrive = GetPhysicalHandle(DriveIndex, actual_lock_drive, FALSE, !actual_lock_drive);
 	if (hPhysicalDrive == INVALID_HANDLE_VALUE) {
-		ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 		goto out;
 	}
 
 	// At this stage we have both a handle and a lock to the physical drive
 	if (!GetDriveLetters(DriveIndex, drive_letters)) {
 		uprintf("Failed to get a drive letter");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_ASSIGN_LETTER));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_ASSIGN_LETTER));
 		goto out;
 	}
 
@@ -1513,7 +1513,7 @@ DWORD WINAPI FormatThread(void* param)
 	drive_name[0] = RemoveDriveLetters(DriveIndex, TRUE, FALSE);
 	if (drive_name[0] == 0) {
 		uprintf("Unable to find a drive letter to use");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_ASSIGN_LETTER));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_ASSIGN_LETTER));
 		goto out;
 	}
 	uprintf("Will use '%c:' as volume mountpoint", toupper(drive_name[0]));
@@ -1539,7 +1539,7 @@ DWORD WINAPI FormatThread(void* param)
 	// Now get RW access to the physical drive
 	hPhysicalDrive = GetPhysicalHandle(DriveIndex, actual_lock_drive, TRUE, !actual_lock_drive);
 	if (hPhysicalDrive == INVALID_HANDLE_VALUE) {
-		ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 		goto out;
 	}
 	RefreshDriveLayout(hPhysicalDrive);
@@ -1552,7 +1552,7 @@ DWORD WINAPI FormatThread(void* param)
 		hLogicalVolume = GetLogicalHandle(DriveIndex, 0, TRUE, FALSE, !actual_lock_drive);
 		if (hLogicalVolume == INVALID_HANDLE_VALUE) {
 			uprintf("Could not access logical volume");
-			ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 			goto out;
 		// If the call succeeds (and we don't get a NULL logical handle as returned for
 		// unpartitioned drives), try to unmount the volume.
@@ -1577,7 +1577,7 @@ try_clear:
 	// Zap partition records. This may help prevent access errors.
 	// Note, Microsoft's way of cleaning partitions (IOCTL_DISK_CREATE_DISK, which is what we apply
 	// in InitializeDisk) is *NOT ENOUGH* to reset a disk and can render it inoperable for partitioning
-	// or formatting under Windows. See https://github.com/pbatard/rufus/issues/759 for details.
+	// or formatting under Windows. See https://github.com/SKYIOUS/SkyImager/issues/759 for details.
 	if ((boot_type != BT_IMAGE) || (img_report.is_iso && !write_as_image)) {
 		if ((!ClearMBRGPT(hPhysicalDrive, SelectedDrive.DiskSize, SelectedDrive.SectorSize)) ||
 			(!InitializeDisk(hPhysicalDrive))) {
@@ -1601,7 +1601,7 @@ try_clear:
 				goto try_clear;
 			}
 			uprintf("Could not reset partitions");
-			ErrorStatus = (LastWriteError != 0) ? LastWriteError : RUFUS_ERROR(ERROR_PARTITION_FAILURE);
+			ErrorStatus = (LastWriteError != 0) ? LastWriteError : SKYIMAGER_ERROR(ERROR_PARTITION_FAILURE);
 			goto out;
 		}
 	}
@@ -1617,7 +1617,7 @@ try_clear:
 			safe_free(userdir);
 			GetLocalTime(&lt);
 			safe_sprintf(&logfile[strlen(logfile)], sizeof(logfile) - strlen(logfile) - 1,
-				"\\rufus_%04d%02d%02d_%02d%02d%02d.log",
+				"\\skyimager_%04d%02d%02d_%02d%02d%02d.log",
 				lt.wYear, lt.wMonth, lt.wDay, lt.wHour, lt.wMinute, lt.wSecond);
 			log_fd = fopenU(logfile, "w+");
 			if (log_fd == NULL) {
@@ -1632,7 +1632,7 @@ try_clear:
 			if (!BadBlocks(hPhysicalDrive, SelectedDrive.DiskSize, (sel >= 2) ? 4 : sel +1, sel, &report, log_fd)) {
 				uprintf("Bad blocks: Check failed.");
 				if (!IS_ERROR(ErrorStatus))
-					ErrorStatus = RUFUS_ERROR(APPERR(ERROR_BADBLOCKS_FAILURE));
+					ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_BADBLOCKS_FAILURE));
 				ClearMBRGPT(hPhysicalDrive, SelectedDrive.DiskSize, SelectedDrive.SectorSize);
 				fclose(log_fd);
 				DeleteFileU(logfile);
@@ -1658,7 +1658,7 @@ try_clear:
 			}
 		} while (r == IDRETRY);
 		if (r == IDABORT) {
-			ErrorStatus = RUFUS_ERROR(ERROR_CANCELLED);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_CANCELLED);
 			goto out;
 		}
 
@@ -1667,7 +1667,7 @@ try_clear:
 		if (!ClearMBRGPT(hPhysicalDrive, SelectedDrive.DiskSize, SelectedDrive.SectorSize)) {
 			uprintf("Could not zero MBR/GPT");
 			if (!IS_ERROR(ErrorStatus))
-				ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 			goto out;
 		}
 	}
@@ -1689,7 +1689,7 @@ try_clear:
 			if (cr != 0 && !IS_ERROR(ErrorStatus)) {
 				SetLastError(cr);
 				uprintf("Failed to apply FFU image: %s", WindowsErrorString());
-				ErrorStatus = RUFUS_ERROR(SCODE_CODE(cr));
+				ErrorStatus = SKYIMAGER_ERROR(SCODE_CODE(cr));
 			}
 		} else {
 			WriteDrive(hPhysicalDrive, FALSE);
@@ -1702,7 +1702,7 @@ try_clear:
 
 	if (!CreatePartition(hPhysicalDrive, partition_type, fs_type, (partition_type == PARTITION_STYLE_MBR)
 		&& (target_type == TT_UEFI), extra_partitions)) {
-		ErrorStatus = (LastWriteError != 0) ? LastWriteError : RUFUS_ERROR(ERROR_PARTITION_FAILURE);
+		ErrorStatus = (LastWriteError != 0) ? LastWriteError : SKYIMAGER_ERROR(ERROR_PARTITION_FAILURE);
 		goto out;
 	}
 	UpdateProgress(OP_PARTITION, -1.0f);
@@ -1713,7 +1713,7 @@ try_clear:
 		if (!CloseHandle(hLogicalVolume)) {
 			hLogicalVolume = INVALID_HANDLE_VALUE;
 			uprintf("Could not close volume: %s", WindowsErrorString());
-			ErrorStatus = RUFUS_ERROR(ERROR_ACCESS_DENIED);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_ACCESS_DENIED);
 			goto out;
 		}
 	}
@@ -1750,14 +1750,14 @@ try_clear:
 		// Can't format ESPs or ext2/ext3 partitions unless we mount them ourselves
 		volume_name = AltMountVolume(DriveIndex, SelectedDrive.Partition[partition_index[PI_MAIN]].Offset, FALSE);
 		if (volume_name == NULL) {
-			ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_ASSIGN_LETTER));
+			ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_ASSIGN_LETTER));
 			goto out;
 		}
 	} else {
 		if (!WaitForLogical(DriveIndex, SelectedDrive.Partition[partition_index[PI_MAIN]].Offset)) {
 			uprintf("Logical drive was not found - aborting");
 			if (!IS_ERROR(ErrorStatus))
-				ErrorStatus = RUFUS_ERROR(ERROR_TIMEOUT);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_TIMEOUT);
 			goto out;
 		}
 	}
@@ -1775,7 +1775,7 @@ try_clear:
 			(img_report.uses_casper ? 0 : FP_CREATE_PERSISTENCE_CONF) |
 			(IsChecked(IDC_QUICK_FORMAT) ? FP_QUICK : 0))) {
 			if (!IS_ERROR(ErrorStatus))
-				ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 			goto out;
 		}
 	}
@@ -1806,7 +1806,7 @@ try_clear:
 		// Get RW access back to the physical drive...
 		hPhysicalDrive = GetPhysicalHandle(DriveIndex, actual_lock_drive, TRUE, !actual_lock_drive);
 		if (hPhysicalDrive == INVALID_HANDLE_VALUE) {
-			ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 			goto out;
 		}
 	}
@@ -1816,7 +1816,7 @@ try_clear:
 		PrintInfoDebug(0, MSG_228);	// "Writing master boot record..."
 		if ((!WriteMBR(hPhysicalDrive)) || (!WriteSBR(hPhysicalDrive))) {
 			if (!IS_ERROR(ErrorStatus))
-				ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 			goto out;
 		}
 		UpdateProgress(OP_FIX_MBR, -1.0f);
@@ -1831,7 +1831,7 @@ try_clear:
 		volume_name = GetLogicalName(DriveIndex, SelectedDrive.Partition[partition_index[PI_MAIN]].Offset, TRUE, TRUE);
 		if (volume_name == NULL) {
 			uprintf("Could not get volume name");
-			ErrorStatus = RUFUS_ERROR(ERROR_NO_VOLUME_ID);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_NO_VOLUME_ID);
 			goto out;
 		}
 		uprintf("Found volume %s", volume_name);
@@ -1842,7 +1842,7 @@ try_clear:
 		RemoveDriveLetters(DriveIndex, FALSE, TRUE);
 		if (!MountVolume(drive_name, volume_name)) {
 			uprintf("Could not remount %s as %c: %s", volume_name, toupper(drive_name[0]), WindowsErrorString());
-			ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_MOUNT_VOLUME));
+			ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_MOUNT_VOLUME));
 			goto out;
 		}
 		CHECK_FOR_USER_CANCEL;
@@ -1872,14 +1872,14 @@ try_clear:
 		} else if (target_type == TT_UEFI) {
 			// For once, no need to do anything - just check our sanity
 			if_assert_fails((boot_type == BT_IMAGE) && IS_EFI_BOOTABLE(img_report) && (fs_type <= FS_NTFS)) {
-				ErrorStatus = RUFUS_ERROR(ERROR_INSTALL_FAILURE);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_INSTALL_FAILURE);
 				goto out;
 			}
 		} else if ( (boot_type == BT_SYSLINUX_V4) || (boot_type == BT_SYSLINUX_V6) ||
 			((boot_type == BT_IMAGE) && (HAS_SYSLINUX(img_report) || HAS_REACTOS(img_report)) &&
 				(!HAS_WINDOWS(img_report) || !allow_dual_uefi_bios)) ) {
 			if (!InstallSyslinux(DriveIndex, drive_name[0], fs_type)) {
-				ErrorStatus = RUFUS_ERROR(ERROR_INSTALL_FAILURE);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_INSTALL_FAILURE);
 				goto out;
 			}
 		} else {
@@ -1888,7 +1888,7 @@ try_clear:
 			hLogicalVolume = GetLogicalHandle(DriveIndex, SelectedDrive.Partition[partition_index[PI_MAIN]].Offset, FALSE, TRUE, FALSE);
 			if ((hLogicalVolume == INVALID_HANDLE_VALUE) || (hLogicalVolume == NULL)) {
 				uprintf("Could not re-mount volume for partition boot record access");
-				ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 				goto out;
 			}
 			// NB: if you unmount the logical volume here, XP will report error:
@@ -1896,7 +1896,7 @@ try_clear:
 			PrintInfoDebug(0, MSG_229);
 			if (!WritePBR(hLogicalVolume)) {
 				if (!IS_ERROR(ErrorStatus))
-					ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+					ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 				goto out;
 			}
 			// We must close and unlock the volume to write files to it
@@ -1921,14 +1921,14 @@ try_clear:
 			PrintInfoDebug(0, MSG_230);
 			if (!ExtractDOS(drive_name)) {
 				if (!IS_ERROR(ErrorStatus))
-					ErrorStatus = RUFUS_ERROR(ERROR_CANNOT_COPY);
+					ErrorStatus = SKYIMAGER_ERROR(ERROR_CANNOT_COPY);
 				goto out;
 			}
 		} else if (boot_type == BT_GRUB4DOS) {
 			grub4dos_dst[0] = drive_name[0];
 			IGNORE_RETVAL(_chdirU(app_data_dir));
 			uprintf("Installing: %s (Grub4DOS loader) %s", grub4dos_dst,
-				IsFileInDB(FILES_DIR "\\grub4dos-" GRUB4DOS_VERSION "\\grldr")?"✓":"✗");
+				IsFileInDB(FILES_DIR "\\grub4dos-" GRUB4DOS_VERSION "\\grldr")?"âœ“":"âœ—");
 			if (!CopyFileU(FILES_DIR "\\grub4dos-" GRUB4DOS_VERSION "\\grldr", grub4dos_dst, FALSE))
 				uprintf("Failed to copy file: %s", WindowsErrorString());
 		} else if ((boot_type == BT_IMAGE) && (image_path != NULL) && (img_report.is_iso || img_report.is_windows_img)) {
@@ -1938,19 +1938,19 @@ try_clear:
 				PrintInfoDebug(0, MSG_268);
 				if (!SetupWinToGo(DriveIndex, drive_name, (extra_partitions & XP_ESP))) {
 					if (!IS_ERROR(ErrorStatus))
-						ErrorStatus = RUFUS_ERROR(APPERR(ERROR_ISO_EXTRACT));
+						ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_ISO_EXTRACT));
 					goto out;
 				}
 				if (unattend_xml_path != NULL) {
 					if (!ApplyWindowsCustomization(drive_name[0], unattend_xml_flags | UNATTEND_WINDOWS_TO_GO))
-						ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_PATCH));
+						ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_PATCH));
 				}
 			} else {
 				if_assert_fails(!img_report.is_windows_img)
 					goto out;
 				if (!ExtractISO(image_path, drive_name, FALSE)) {
 					if (!IS_ERROR(ErrorStatus))
-						ErrorStatus = RUFUS_ERROR(APPERR(ERROR_ISO_EXTRACT));
+						ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_ISO_EXTRACT));
 					goto out;
 				}
 				if (HAS_KOLIBRIOS(img_report)) {
@@ -1970,23 +1970,23 @@ try_clear:
 					efi_dst[sizeof(efi_dst) - sizeof("\\bootx64.efi")] = 0;
 					if (!CreateDirectoryA(efi_dst, 0)) {
 						uprintf("Could not create directory '%s': %s", efi_dst, WindowsErrorString());
-						ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_PATCH));
+						ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_PATCH));
 					} else {
 						efi_dst[sizeof(efi_dst) - sizeof("\\bootx64.efi")] = '\\';
 						if (!WimExtractFile(img_report.wininst_path[0], 1, "Windows\\Boot\\EFI\\bootmgfw.efi", efi_dst)) {
 							uprintf("Failed to setup Win7 EFI boot");
-							ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_PATCH));
+							ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_PATCH));
 						}
 					}
 				}
 				if ( (target_type == TT_BIOS) && HAS_WINPE(img_report) ) {
 					// Apply WinPE fixup
 					if (!SetupWinPE(drive_name[0]))
-						ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_PATCH));
+						ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_PATCH));
 				}
 				if (unattend_xml_path != NULL) {
 					if (!ApplyWindowsCustomization(drive_name[0], unattend_xml_flags))
-						ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_PATCH));
+						ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_PATCH));
 				}
 			}
 		}

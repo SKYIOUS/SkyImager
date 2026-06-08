@@ -1,9 +1,9 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * ISO file extraction
- * Copyright © 2011-2026 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2011-2026 Pete Batard <pete@akeo.ie>
  * Based on libcdio's iso & udf samples:
- * Copyright © 2003-2014 Rocky Bernstein <rocky@gnu.org>
+ * Copyright Â© 2003-2014 Rocky Bernstein <rocky@gnu.org>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
 #include <cdio/iso9660.h>
 #include <cdio/udf.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "ui.h"
 #include "vhd.h"
 #include "drive.h"
@@ -82,7 +82,7 @@ typedef struct {
 	BOOLEAN is_old_c32[NB_OLD_C32];
 } EXTRACT_PROPS;
 
-RUFUS_IMG_REPORT img_report;
+SKYIMAGER_IMG_REPORT img_report;
 FILE* fd_md5sum = NULL;
 int64_t iso_blocking_status = -1;
 uint64_t total_blocks, extra_blocks, nb_blocks, last_nb_blocks;
@@ -563,7 +563,7 @@ static void fix_config(const char* psz_fullpath, const char* psz_path, const cha
 				}
 			}
 			if (patched)
-				uprintf("  Patched %s: '%s' ➔ '%s'", src, iso_label, usb_label);
+				uprintf("  Patched %s: '%s' âž” '%s'", src, iso_label, usb_label);
 			// Since version 8.2, and https://github.com/rhinstaller/anaconda/commit/a7661019546ec1d8b0935f9cb0f151015f2e1d95,
 			// Red Hat derivatives have changed their CD-ROM detection policy which leads to the installation source
 			// not being found. So we need to use 'inst.repo' instead of 'inst.stage2' in the kernel options.
@@ -580,7 +580,7 @@ static void fix_config(const char* psz_fullpath, const char* psz_path, const cha
 					}
 				}
 				if (patched)
-					uprintf("  Patched %s: '%s' ➔ '%s'", src, "inst.stage2", "inst.repo");
+					uprintf("  Patched %s: '%s' âž” '%s'", src, "inst.stage2", "inst.repo");
 			}
 		}
 		safe_free(iso_label);
@@ -605,7 +605,7 @@ static void fix_config(const char* psz_fullpath, const char* psz_path, const cha
 			safe_sprintf(iso_label, MAX_PATH, "cd9660:/dev/iso9660/%s", img_report.label);
 			safe_sprintf(usb_label, MAX_PATH, "msdosfs:/dev/msdosfs/%s", img_report.usb_label);
 			if (replace_in_token_data(src, "set", iso_label, usb_label, TRUE) != NULL) {
-				uprintf("  Patched %s: '%s' ➔ '%s'", src, iso_label, usb_label);
+				uprintf("  Patched %s: '%s' âž” '%s'", src, iso_label, usb_label);
 				modified = TRUE;
 			}
 		}
@@ -711,7 +711,7 @@ static int udf_extract_files(udf_t *p_udf, udf_dirent_t *p_udf_dirent, const cha
 				if (props.is_old_c32[i] && use_own_c32[i]) {
 					static_sprintf(tmp, "%s/syslinux-%s/%s", FILES_DIR, embedded_sl_version_str[0], old_c32_name[i]);
 					if (CopyFileU(tmp, psz_fullpath, FALSE)) {
-						uprintf("  Replaced with local version %s", IsFileInDB(tmp)?"✓":"✗");
+						uprintf("  Replaced with local version %s", IsFileInDB(tmp)?"âœ“":"âœ—");
 						break;
 					}
 					uprintf("  Could not replace file: %s", WindowsErrorString());
@@ -789,7 +789,7 @@ static int udf_extract_files(udf_t *p_udf, udf_dirent_t *p_udf_dirent, const cha
 
 out:
 	if (GetLastError() != ERROR_SUCCESS)
-		ErrorStatus = RUFUS_ERROR(GetLastError());
+		ErrorStatus = SKYIMAGER_ERROR(GetLastError());
 	udf_dirent_free(p_udf_dirent);
 	ISO_BLOCKING(safe_closehandle(file_handle));
 	safe_free(psz_sanpath);
@@ -919,7 +919,7 @@ static int iso_extract_files(iso9660_t* p_iso, const char *psz_path)
 				if (props.is_old_c32[i] && use_own_c32[i]) {
 					static_sprintf(tmp, "%s/syslinux-%s/%s", FILES_DIR, embedded_sl_version_str[0], old_c32_name[i]);
 					if (CopyFileU(tmp, psz_fullpath, FALSE)) {
-						uprintf("  Replaced with local version %s", IsFileInDB(tmp)?"✓":"✗");
+						uprintf("  Replaced with local version %s", IsFileInDB(tmp)?"âœ“":"âœ—");
 						break;
 					}
 					uprintf("  Could not replace file: %s", WindowsErrorString());
@@ -939,7 +939,7 @@ static int iso_extract_files(iso9660_t* p_iso, const char *psz_path)
 					if (p_statbuf2 != NULL) {
 						to_windows_path(psz_fullpath);
 						to_windows_path(p_statbuf->rr.psz_symlink);
-						uprintf("Symlinking: %s%s ➔ %s", psz_fullpath,
+						uprintf("Symlinking: %s%s âž” %s", psz_fullpath,
 							(p_statbuf2->type == _STAT_DIR) ? "\\" : "", p_statbuf->rr.psz_symlink);
 						if (!CreateSymbolicLinkU(psz_fullpath, p_statbuf->rr.psz_symlink,
 							(p_statbuf2->type == _STAT_DIR) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0))
@@ -951,7 +951,7 @@ static int iso_extract_files(iso9660_t* p_iso, const char *psz_path)
 					}
 				} else if (file_length == 0) {
 					if ((safe_stricmp(p_statbuf->filename, "syslinux") == 0) &&
-						// Special handling for ISOs that have a syslinux → isolinux symbolic link (e.g. Knoppix)
+						// Special handling for ISOs that have a syslinux â†’ isolinux symbolic link (e.g. Knoppix)
 						(safe_stricmp(p_statbuf->rr.psz_symlink, "isolinux") == 0)) {
 						static_strcpy(symlinked_syslinux, psz_fullpath);
 						print_extracted_file(psz_fullpath, file_length);
@@ -1071,7 +1071,7 @@ static int iso_extract_files(iso9660_t* p_iso, const char *psz_path)
 
 out:
 	if (r != 0 && GetLastError() != ERROR_SUCCESS)
-		ErrorStatus = RUFUS_ERROR(GetLastError());
+		ErrorStatus = SKYIMAGER_ERROR(GetLastError());
 	ISO_BLOCKING(safe_closehandle(file_handle));
 	if (p_entlist != NULL)
 		iso9660_filelist_free(p_entlist);
@@ -1119,7 +1119,7 @@ void GetGrubVersion(char* buf, size_t buf_size, const char* source)
 
 	static_strcpy(img_report.grub2_version, grub_version);
 
-	// <Shakes fist angrily> "KASPERSKYYYYYY!!!..." (https://github.com/pbatard/rufus/issues/467)
+	// <Shakes fist angrily> "KASPERSKYYYYYY!!!..." (https://github.com/SKYIOUS/SkyImager/issues/467)
 	// But seriously, these guys should know better than "security" through obscurity...
 	if (img_report.grub2_version[0] == '0')
 		img_report.grub2_version[0] = 0;
@@ -1260,7 +1260,7 @@ BOOL ExtractISO(const char* src_iso, const char* dest_dir, BOOL scan)
 		IGNORE_RETVAL(_chdirU(app_data_dir));
 		if (total_blocks == 0) {
 			uprintf("Error: ISO has not been properly scanned.");
-			ErrorStatus = RUFUS_ERROR(APPERR(ERROR_ISO_SCAN));
+			ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_ISO_SCAN));
 			goto out;
 		}
 		nb_blocks = 0;
@@ -1527,7 +1527,7 @@ out:
 				fclose(fd);
 				fd = NULL;
 				static_sprintf(path2, "%s\\syslinux.org", dest_dir);
-				uprintf("Renaming: %s ➔ %s", path, path2);
+				uprintf("Renaming: %s âž” %s", path, path2);
 				IGNORE_RETVAL(rename(path, path2));
 			}
 			if (fd == NULL) {
@@ -1543,7 +1543,7 @@ out:
 						fprintf(fd, "  APPEND %s/\n", img_report.cfg_path);
 						img_report.cfg_path[i] = '/';
 					}
-					uprintf("Created: %s → %s", path, img_report.cfg_path);
+					uprintf("Created: %s â†’ %s", path, img_report.cfg_path);
 				}
 			}
 			if (fd != NULL)
@@ -1579,12 +1579,12 @@ out:
 					fprintf(fd, "DEFAULT loadconfig\n\nLABEL loadconfig\n  CONFIG %s\n  APPEND %s\n", &path[2], &isolinux_dir[2]);
 					fclose(fd);
 					to_windows_path(symlinked_syslinux);
-					uprintf("Created: %s\\%s → %s", symlinked_syslinux, efi_cfg_name[i], &path[2]);
+					uprintf("Created: %s\\%s â†’ %s", symlinked_syslinux, efi_cfg_name[i], &path[2]);
 					to_unix_path(symlinked_syslinux);
 				}
 			}
 		} else if (HAS_BOOTMGR(img_report) && enable_ntfs_compression) {
-			// bootmgr might need to be uncompressed: https://github.com/pbatard/rufus/issues/1381
+			// bootmgr might need to be uncompressed: https://github.com/SKYIOUS/SkyImager/issues/1381
 			RunCommand("compact /u bootmgr* efi/boot/*.efi", dest_dir, TRUE);
 		}
 		// Exception for Slax Syslinux UEFI bootloaders...
@@ -1595,9 +1595,9 @@ out:
 			static_sprintf(dst_path, "%s\\EFI", dest_dir);
 			if (!PathFileExistsA(dst_path)) {
 				if (MoveFileA(path, dst_path))
-					uprintf("Moved: %s → %s", path, dst_path);
+					uprintf("Moved: %s â†’ %s", path, dst_path);
 				else
-					uprintf("Could not move %s → %s: %s", path, dst_path, WindowsErrorString());
+					uprintf("Could not move %s â†’ %s: %s", path, dst_path, WindowsErrorString());
 			}
 		}
 		if (fd_md5sum != NULL) {
@@ -1611,7 +1611,7 @@ out:
 	iso9660_close(p_iso);
 	udf_close(p_udf);
 	if ((r != 0) && (ErrorStatus == 0))
-		ErrorStatus = RUFUS_ERROR(APPERR(scan_only ? ERROR_ISO_SCAN : ERROR_ISO_EXTRACT));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(scan_only ? ERROR_ISO_SCAN : ERROR_ISO_EXTRACT));
 	return (r == 0);
 }
 
@@ -1918,7 +1918,7 @@ BOOL HasEfiImgBootLoaders(void* iso)
 		if (c > 0) {
 			if (!ret)
 				uprintf("  Detected EFI bootloader(s) (from '%s'):", img_report.efi_img_path);
-			uprintf("  ● 'boot%s.efi'", efi_archname[i]);
+			uprintf("  â— 'boot%s.efi'", efi_archname[i]);
 			ret = TRUE;
 		}
 	}
@@ -2025,7 +2025,7 @@ BOOL DumpFatDir(void* iso, const char* path, int32_t cluster)
 				while ((s != 0) && (s < 0xFFFFFFFFULL) && (written < diritem.size)) {
 					buf = libfat_get_sector(lf_fs, s);
 					if (buf == NULL)
-						ErrorStatus = RUFUS_ERROR(ERROR_SECTOR_NOT_FOUND);
+						ErrorStatus = SKYIMAGER_ERROR(ERROR_SECTOR_NOT_FOUND);
 					if (IS_ERROR(ErrorStatus))
 						goto out;
 					size = MIN(LIBFAT_SECTOR_SIZE, diritem.size - written);
@@ -2083,7 +2083,7 @@ static DWORD WINAPI OpticalDiscSaveImageThread(void* param)
 	hPhysicalDrive = CreateFileA(img_save->DevicePath, GENERIC_READ, FILE_SHARE_READ,
 		NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	if (hPhysicalDrive == INVALID_HANDLE_VALUE) {
-		ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 		goto out;
 	}
 
@@ -2095,13 +2095,13 @@ static DWORD WINAPI OpticalDiscSaveImageThread(void* param)
 		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 	if (hDestImage == INVALID_HANDLE_VALUE) {
 		uprintf("Could not open image '%s': %s", img_save->ImagePath, WindowsErrorString());
-		ErrorStatus = RUFUS_ERROR(ERROR_OPEN_FAILED);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_OPEN_FAILED);
 		goto out;
 	}
 
 	buffer = (uint8_t*)_mm_malloc(img_save->BufSize, 16);
 	if (buffer == NULL) {
-		ErrorStatus = RUFUS_ERROR(ERROR_NOT_ENOUGH_MEMORY);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_NOT_ENOUGH_MEMORY);
 		uprintf("Could not allocate buffer");
 		goto out;
 	}
@@ -2121,7 +2121,7 @@ static DWORD WINAPI OpticalDiscSaveImageThread(void* param)
 		s = ReadFile(hPhysicalDrive, buffer,
 			(DWORD)MIN(img_save->BufSize, img_save->DeviceSize - wb), &rSize, NULL);
 		if (!s) {
-			ErrorStatus = RUFUS_ERROR(ERROR_READ_FAULT);
+			ErrorStatus = SKYIMAGER_ERROR(ERROR_READ_FAULT);
 			uprintf("Read error: %s", WindowsErrorString());
 			goto out;
 		}
@@ -2146,7 +2146,7 @@ static DWORD WINAPI OpticalDiscSaveImageThread(void* param)
 					goto out;
 				}
 			} else {
-				ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+				ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 				goto out;
 			}
 			Sleep(200);
@@ -2157,7 +2157,7 @@ static DWORD WINAPI OpticalDiscSaveImageThread(void* param)
 	if (wb != img_save->DeviceSize) {
 		uprintf("Error: wrote %s, expected %s", SizeToHumanReadable(wb, FALSE, FALSE),
 			SizeToHumanReadable(img_save->DeviceSize, FALSE, FALSE));
-		ErrorStatus = RUFUS_ERROR(ERROR_WRITE_FAULT);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_WRITE_FAULT);
 		goto out;
 	}
 	uprintf("Operation complete (Wrote %s).", SizeToHumanReadable(wb, FALSE, FALSE));
@@ -2209,7 +2209,7 @@ void OpticalDiscSaveImage(void)
 		SendMessage(hMainDialog, UM_TIMER_START, 0, 0);
 	} else {
 		uprintf("Unable to start ISO save thread");
-		ErrorStatus = RUFUS_ERROR(APPERR(ERROR_CANT_START_THREAD));
+		ErrorStatus = SKYIMAGER_ERROR(APPERR(ERROR_CANT_START_THREAD));
 		safe_free(img_save.ImagePath);
 		PostMessage(hMainDialog, UM_FORMAT_COMPLETED, (WPARAM)FALSE, 0);
 	}
@@ -2259,7 +2259,7 @@ out:
 	if (r != 0 && !IS_ERROR(ErrorStatus)) {
 		SetLastError(r);
 		uprintf("Failed to write ISO image: %s", WindowsErrorString());
-		ErrorStatus = RUFUS_ERROR(SCODE_CODE(r));
+		ErrorStatus = SKYIMAGER_ERROR(SCODE_CODE(r));
 	}
 	PostMessage(hMainDialog, UM_FORMAT_COMPLETED, (WPARAM)TRUE, 0);
 	if (!IS_ERROR(ErrorStatus))

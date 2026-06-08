@@ -1,8 +1,8 @@
 /*
- * Rufus: The Reliable USB Formatting Utility
+ * SkyImager: A modern design iteration of the trusted Rufus utility. Precision performance, re-imagined presentation.
  * Large FAT32 formatting
- * Copyright © 2007-2009 Tom Thornhill/Ridgecrop
- * Copyright © 2011-2025 Pete Batard <pete@akeo.ie>
+ * Copyright Â© 2007-2009 Tom Thornhill/Ridgecrop
+ * Copyright Â© 2011-2025 Pete Batard <pete@akeo.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "rufus.h"
+#include "skyimager.h"
 #include "file.h"
 #include "drive.h"
 #include "format.h"
@@ -38,7 +38,7 @@
 #include "msapi_utf8.h"
 #include "localization.h"
 
-#define die(msg, err) do { uprintf(msg); ErrorStatus = RUFUS_ERROR(err); goto out; } while(0)
+#define die(msg, err) do { uprintf(msg); ErrorStatus = SKYIMAGER_ERROR(err); goto out; } while(0)
 
 extern BOOL write_as_esp;
 
@@ -189,7 +189,7 @@ BOOL FormatLargeFAT32(DWORD DriveIndex, uint64_t PartitionOffset, DWORD ClusterS
 	ULONGLONG FatNeeded, ClusterCount;
 
 	if (safe_strncmp(FSName, "FAT", 3) != 0) {
-		ErrorStatus = RUFUS_ERROR(ERROR_INVALID_PARAMETER);
+		ErrorStatus = SKYIMAGER_ERROR(ERROR_INVALID_PARAMETER);
 		goto out;
 	}
 	if (!(Flags & FP_NO_PROGRESS)) {
